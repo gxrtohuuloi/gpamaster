@@ -59,6 +59,19 @@
         -webkit-tap-highlight-color: transparent;
       }
 
+      /* GLOBAL SCROLLBAR HIDING */
+      * {
+          -ms-overflow-style: none !important;  /* IE and Edge */
+          scrollbar-width: none !important;  /* Firefox */
+      }
+      
+      *::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+          background: transparent !important;
+      }
+
       /* HIDE SPIN BUTTONS FOR NUMBER INPUTS */
       input[type=number]::-webkit-outer-spin-button,
       input[type=number]::-webkit-inner-spin-button {
@@ -169,32 +182,6 @@
         50% { opacity: 1; } 
         100% { opacity: 0.6; }
       }
-
-      /* ABSOLUTE SCROLLBAR REMOVAL */
-      .no-scrollbar {
-          -ms-overflow-style: none !important;  /* IE and Edge */
-          scrollbar-width: none !important;  /* Firefox */
-      }
-      
-      .no-scrollbar::-webkit-scrollbar {
-          display: none !important;
-          width: 0 !important;
-          height: 0 !important;
-          background: transparent !important;
-          -webkit-appearance: none !important;
-      }
-      
-      /* Explicitly hide buttons, track, thumb, and corner */
-      .no-scrollbar::-webkit-scrollbar-button,
-      .no-scrollbar::-webkit-scrollbar-track,
-      .no-scrollbar::-webkit-scrollbar-track-piece,
-      .no-scrollbar::-webkit-scrollbar-thumb,
-      .no-scrollbar::-webkit-scrollbar-corner,
-      .no-scrollbar::-webkit-resizer {
-          display: none !important;
-          width: 0 !important;
-          height: 0 !important;
-      }
     </style>
 </head>
 <body>
@@ -209,24 +196,31 @@
     <div class="relative min-h-screen flex flex-col font-sans text-gray-900 overflow-hidden">
         
         <header class="sticky top-0 z-50 glass-panel border-b-0 border-b border-white/30 shadow-sm transition-all">
-            <div class="flex items-center justify-between px-6 py-3 lg:px-20 relative z-50">
-                <div class="flex items-center gap-3 shrink-0">
+            <!-- Adjusted Flex Layout for Better Responsiveness -->
+            <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 px-4 py-3 lg:px-20 relative z-50">
+                <!-- Logo: Order 1 on all -->
+                <div class="flex items-center gap-3 shrink-0 z-20 order-1">
                     <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 text-primary border border-white/40 shadow-inner">
                         <i data-lucide="graduation-cap" class="h-6 w-6"></i>
                     </div>
                     <h2 class="hidden sm:block text-gray-900 text-xl font-bold leading-tight tracking-tight drop-shadow-sm">GPA Master</h2>
                 </div>
 
-                <div class="absolute left-1/2 -translate-x-1/2 flex bg-white/40 rounded-full p-1 border border-white/40 backdrop-blur-md shadow-inner z-0">
-                    <button onclick="switchTab('calculator')" id="nav-calculator" class="relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary">
-                        Tính điểm
-                    </button>
-                    <button onclick="switchTab('goal')" id="nav-goal" class="relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40">
-                        Mục tiêu
-                    </button>
+                <!-- Navigation Tabs: Order 3 on mobile (new line), Order 2 on Desktop (center flow) -->
+                <!-- Removed absolute positioning to prevent overlap -->
+                <div class="order-3 md:order-2 w-full md:w-auto flex justify-center z-10">
+                    <div class="flex bg-white/40 rounded-full p-1 border border-white/40 backdrop-blur-md shadow-inner">
+                        <button onclick="switchTab('calculator')" id="nav-calculator" class="relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary">
+                            Tính điểm
+                        </button>
+                        <button onclick="switchTab('goal')" id="nav-goal" class="relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40">
+                            Mục tiêu
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-3 relative z-10">
+                <!-- User Profile/Input: Order 2 on mobile (right), Order 3 on Desktop (right) -->
+                <div class="flex items-center gap-3 relative z-20 order-2 md:order-3 justify-end md:justify-start flex-1 md:flex-none">
                     <div class="hidden md:flex flex-col items-end">
                         <span id="save-status-text" class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">OFFLINE</span>
                     </div>
@@ -242,7 +236,7 @@
                             placeholder="MSSV" 
                             onchange="handleStudentIdChange(this.value)" 
                             onkeydown="if(event.key === 'Enter') this.blur()"
-                            class="bg-transparent border-none p-0 text-sm font-black text-gray-800 placeholder-gray-400 w-20 sm:w-24 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left"
+                            class="bg-transparent border-none p-0 text-sm font-black text-gray-800 placeholder-gray-400 w-32 sm:w-40 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left"
                         >
                         <div id="loading-indicator" class="hidden">
                              <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-primary"></i>
@@ -700,6 +694,16 @@
                     const data = docSnap.data();
                     subjects = data.subjects || [];
                     
+                    // SYNC GOAL DATA
+                    if (data.goal) {
+                        const tGPA = data.goal.targetGPA || '';
+                        const tCred = data.goal.targetCredits || '';
+                        document.getElementById('goal-target-gpa').value = tGPA;
+                        document.getElementById('goal-target-credits').value = tCred;
+                        localStorage.setItem('gpa-target-gpa', tGPA);
+                        localStorage.setItem('gpa-target-credits', tCred);
+                    }
+
                     saveSubjectsLocal();
                     renderSubjectList(false);
                     updateStats();
@@ -725,7 +729,6 @@
             });
         }
         
-        // UPDATED updateStatus to match new Header
         function updateStatus(msg, type = 'normal') {
             const badgeTextEl = document.getElementById('save-status-text');
             const dotEl = document.getElementById('status-dot');
@@ -779,14 +782,19 @@
             isSaving = true;
             updateStatus("Đang đồng bộ...", "saving");
 
+            const targetGPA = document.getElementById('goal-target-gpa').value;
+            const targetCredits = document.getElementById('goal-target-credits').value;
+
             try {
                 await setDoc(doc(db, "students", studentId), {
                     subjects: subjects,
+                    goal: {
+                        targetGPA: targetGPA,
+                        targetCredits: targetCredits
+                    },
                     lastUpdated: new Date().toISOString()
                 });
                 hasUnsavedChanges = false;
-                // Success status will come from Snapshot listener usually, but we set it here too
-                // We let the listener confirm it to be true "Real-time"
             } catch (e) {
                 console.error("Save error:", e);
                 updateStatus("Lỗi lưu trữ", "error");
@@ -856,11 +864,11 @@
                 calculateGoal(); 
             }
             if (isCalc) {
-                navCalc.className = "relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary";
-                navGoal.className = "relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40";
+                navCalc.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary";
+                navGoal.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40";
             } else {
-                navCalc.className = "relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40";
-                navGoal.className = "relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary";
+                navCalc.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40";
+                navGoal.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary";
             }
         }
 
@@ -1048,6 +1056,7 @@
                 document.getElementById(id).addEventListener('input', () => {
                     localStorage.setItem(id === 'goal-target-gpa' ? 'gpa-target-gpa' : 'gpa-target-credits', document.getElementById(id).value);
                     calculateGoal();
+                    triggerAutoSave();
                 });
             });
         }
