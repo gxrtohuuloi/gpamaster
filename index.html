@@ -64,6 +64,18 @@
         -webkit-tap-highlight-color: transparent;
       }
 
+      /* HIDE SPIN BUTTONS FOR NUMBER INPUTS */
+      /* Chrome, Safari, Edge, Opera */
+      input[type=number]::-webkit-outer-spin-button,
+      input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
+
       /* Liquid Background Animation */
       .liquid-blob {
         position: absolute;
@@ -300,26 +312,28 @@
                                 <!-- Row 1: Name -->
                                 <div class="flex flex-col gap-1.5">
                                     <label class="text-sm font-medium text-gray-700 ml-1">Tên môn học</label>
-                                    <input id="input-name" type="text" placeholder="Ví dụ: Đại Số Tuyến Tính" class="glass-input h-12 w-full rounded-xl px-4 text-sm text-gray-800 placeholder:text-gray-400 capitalize">
+                                    <input 
+                                        id="input-name" 
+                                        type="text" 
+                                        placeholder="Ví dụ: Đại Số Tuyến Tính" 
+                                        class="glass-input h-12 w-full rounded-xl px-4 text-sm text-gray-800 placeholder:text-gray-400 capitalize"
+                                        onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()"
+                                    >
                                 </div>
                                 
                                 <!-- Row 2: Credits & Score -->
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="flex flex-col gap-1.5">
                                         <label class="text-sm font-medium text-gray-700 ml-1">Số tín chỉ</label>
-                                        <div class="relative">
-                                            <select id="input-credits" class="glass-input h-12 w-full rounded-xl px-3 text-sm appearance-none text-gray-800 cursor-pointer">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3" selected>3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                            </select>
-                                            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                                                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </div>
-                                        </div>
+                                        <!-- UPDATED: No default value, text-center for better UX on mobile? kept normal for now -->
+                                        <input 
+                                            id="input-credits" 
+                                            type="number" 
+                                            placeholder="3" 
+                                            inputmode="numeric"
+                                            class="glass-input h-12 w-full rounded-xl px-4 text-sm text-gray-800 placeholder:text-gray-400"
+                                            onkeydown="if(event.key === 'Enter') document.getElementById('input-score').focus()"
+                                        >
                                     </div>
                                     <div class="flex flex-col gap-1.5">
                                         <label class="text-sm font-medium text-gray-700 ml-1">Điểm (hệ 10)</label>
@@ -978,11 +992,18 @@
 
         function addSubject() {
             const name = inputNameEl.value.trim();
-            const credits = parseInt(document.getElementById('input-credits').value);
+            const creditsVal = document.getElementById('input-credits').value;
+            const credits = parseInt(creditsVal);
             const scoreStr = document.getElementById('input-score').value;
             const score10 = parseInputNumber(scoreStr);
 
             if (!name || scoreStr === '') return;
+            
+            if (isNaN(credits) || credits <= 0) {
+                alert("Số tín chỉ phải là số nguyên dương lớn hơn 0");
+                return;
+            }
+
             if (score10 < 0 || score10 > 10) {
                 alert("Điểm phải nằm trong khoảng từ 0 đến 10");
                 return;
@@ -1016,10 +1037,11 @@
             
             triggerAutoSave();
             
-            // Reset
+            // Reset focus to name for rapid entry
             inputNameEl.value = '';
             document.getElementById('input-score').value = '';
-            document.getElementById('input-credits').value = '3';
+            document.getElementById('input-credits').value = '';
+            inputNameEl.focus();
         }
 
         function deleteSubject(id) {
