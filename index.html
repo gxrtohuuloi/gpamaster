@@ -35,6 +35,20 @@
               success: '#22c55e',
               warning: '#eab308',
               danger: '#ef4444',
+            },
+            keyframes: {
+                zoomIn: {
+                    '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+                    '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+                },
+                fadeIn: {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                }
+            },
+            animation: {
+                zoomIn: 'zoomIn 0.3s ease-out forwards',
+                fadeIn: 'fadeIn 0.2s ease-out forwards',
             }
           }
         }
@@ -158,6 +172,19 @@
         0% { opacity: 0.6; }
         50% { opacity: 1; }
         100% { opacity: 0.6; }
+      }
+
+      /* Custom Scrollbar for Modal */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.05);
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(19, 127, 236, 0.5);
+        border-radius: 4px;
       }
 
     </style>
@@ -348,7 +375,7 @@
 
                     <!-- Right Column: Stats -->
                     <div class="flex flex-col gap-6 lg:col-span-4 order-2 lg:order-2 lg:sticky lg:top-24">
-                        <div class="group/stats relative overflow-hidden rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20 border border-white/20 transition-transform active:scale-[0.98]"
+                        <div class="group/stats relative overflow-hidden rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20 border border-white/20 transition-transform active:scale-[0.99]"
                              style="background: linear-gradient(135deg, rgba(19, 127, 236, 0.9), rgba(59, 130, 246, 0.8)); backdrop-filter: blur(20px);">
                              
                              <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
@@ -356,7 +383,12 @@
 
                              <h3 class="relative z-10 text-lg font-medium opacity-90 tracking-wide flex items-center justify-between">
                                  Kết quả học tập
-                                 <i data-lucide="bar-chart-2" class="h-5 w-5 opacity-70"></i>
+                                 <button onclick="openStatsModal()" class="flex items-center gap-1.5 p-1.5 pr-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/10 shadow-sm backdrop-blur-sm group/btn">
+                                     <div class="p-1 rounded-full bg-white/20">
+                                        <i data-lucide="bar-chart-2" class="h-4 w-4 text-white"></i>
+                                     </div>
+                                     <span class="text-xs font-bold text-white/90">Chi tiết</span>
+                                 </button>
                              </h3>
                              
                              <div class="relative z-10 mt-6 flex flex-col gap-1">
@@ -559,6 +591,78 @@
                 </p>
             </div>
         </footer>
+
+        <!-- MODAL: STATS & CHARTS -->
+        <div id="stats-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300" onclick="closeStatsModal()"></div>
+            
+            <!-- Modal Content -->
+            <div class="relative w-full max-w-2xl transform overflow-hidden rounded-[2rem] bg-white/90 shadow-2xl transition-all animate-zoomIn border border-white/50 backdrop-blur-xl max-h-[90vh] flex flex-col">
+                
+                <!-- Header -->
+                <div class="flex items-center justify-between border-b border-gray-100 p-6">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary">
+                            <i data-lucide="pie-chart" class="h-6 w-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Thống kê chi tiết</h3>
+                    </div>
+                    <button onclick="closeStatsModal()" class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                        <i data-lucide="x" class="h-6 w-6"></i>
+                    </button>
+                </div>
+
+                <!-- Scrollable Body -->
+                <div class="overflow-y-auto p-6 custom-scrollbar">
+                    
+                    <!-- Grade Distribution Chart -->
+                    <div class="mb-8">
+                        <h4 class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Phân bố điểm chữ</h4>
+                        <div class="relative h-64 w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+                            <canvas id="grade-distribution-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Credits Breakdown -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                             <h4 class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Tỉ lệ tích lũy</h4>
+                             <div class="relative h-48 w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100 flex items-center justify-center">
+                                 <canvas id="credits-chart"></canvas>
+                             </div>
+                        </div>
+                        
+                        <!-- Mini Stats Grid -->
+                        <div class="grid grid-cols-2 gap-3 content-start">
+                             <div class="rounded-xl bg-blue-50/50 p-4 border border-blue-100">
+                                 <span class="block text-xs font-medium text-gray-500">Tổng môn học</span>
+                                 <span id="modal-total-subjects" class="block mt-1 text-2xl font-black text-blue-600">0</span>
+                             </div>
+                             <div class="rounded-xl bg-green-50/50 p-4 border border-green-100">
+                                 <span class="block text-xs font-medium text-gray-500">Môn đạt (A)</span>
+                                 <span id="modal-a-grades" class="block mt-1 text-2xl font-black text-green-600">0</span>
+                             </div>
+                             <div class="rounded-xl bg-purple-50/50 p-4 border border-purple-100">
+                                 <span class="block text-xs font-medium text-gray-500">Tín chỉ tích lũy</span>
+                                 <span id="modal-accumulated-credits" class="block mt-1 text-2xl font-black text-purple-600">0</span>
+                             </div>
+                             <div class="rounded-xl bg-orange-50/50 p-4 border border-orange-100">
+                                 <span class="block text-xs font-medium text-gray-500">Điểm cao nhất</span>
+                                 <span id="modal-highest-score" class="block mt-1 text-2xl font-black text-orange-600">0</span>
+                             </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- Footer -->
+                <div class="border-t border-gray-100 bg-gray-50/50 p-4 text-center">
+                    <p class="text-xs text-gray-400">Biểu đồ được cập nhật tự động dựa trên dữ liệu nhập vào.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- MAIN LOGIC WITH FIREBASE -->
@@ -636,6 +740,10 @@
         let saveTimeout = null;
         let hasUnsavedChanges = false;
         let unsubscribe = null;
+        
+        // Modal Chart Instances
+        let distChart = null;
+        let creditChart = null;
 
         // --- 3. CLOUD FUNCTIONS (FIREBASE) ---
 
@@ -1185,6 +1293,110 @@
                 }
             });
         }
+        
+        // --- 10. STATS MODAL LOGIC ---
+        function openStatsModal() {
+            document.getElementById('stats-modal').classList.remove('hidden');
+            document.getElementById('stats-modal').classList.add('flex');
+            renderDetailCharts();
+        }
+
+        function closeStatsModal() {
+            document.getElementById('stats-modal').classList.add('hidden');
+            document.getElementById('stats-modal').classList.remove('flex');
+        }
+        
+        function renderDetailCharts() {
+            // Data Prep
+            const grades = { 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, 'D+': 0, 'D': 0, 'F': 0 };
+            let totalSubjects = subjects.length;
+            let aGrades = 0;
+            let accCredits = 0;
+            let highestScore = 0;
+
+            subjects.forEach(s => {
+                const info = getGradeInfo(s.score10);
+                if (grades[info.letter] !== undefined) grades[info.letter]++;
+                if (info.letter === 'A') aGrades++;
+                if (s.isAccumulated) accCredits += s.credits;
+                if (s.score10 > highestScore) highestScore = s.score10;
+            });
+
+            // Update Mini Stats
+            document.getElementById('modal-total-subjects').innerText = totalSubjects;
+            document.getElementById('modal-a-grades').innerText = aGrades;
+            document.getElementById('modal-accumulated-credits').innerText = accCredits;
+            document.getElementById('modal-highest-score').innerText = highestScore;
+
+            // Chart 1: Distribution
+            const ctxDist = document.getElementById('grade-distribution-chart').getContext('2d');
+            if (distChart) distChart.destroy();
+            
+            distChart = new Chart(ctxDist, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(grades),
+                    datasets: [{
+                        label: 'Số lượng môn',
+                        data: Object.values(grades),
+                        backgroundColor: [
+                            '#22c55e', '#3b82f6', '#06b6d4', '#eab308', 
+                            '#f97316', '#ef4444', '#b91c1c', '#64748b'
+                        ],
+                        borderRadius: 8,
+                        barThickness: 'flex',
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Credits
+            const ctxCredit = document.getElementById('credits-chart').getContext('2d');
+            const totalCredits = subjects.reduce((sum, s) => sum + s.credits, 0);
+            const nonAccCredits = totalCredits - accCredits;
+
+            if (creditChart) creditChart.destroy();
+
+            creditChart = new Chart(ctxCredit, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tích lũy', 'Không tích lũy'],
+                    datasets: [{
+                        data: [accCredits, nonAccCredits],
+                        backgroundColor: ['#137fec', '#cbd5e1'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { 
+                            position: 'right',
+                            labels: { usePointStyle: true, boxWidth: 8 }
+                        }
+                    }
+                }
+            });
+        }
 
         // --- EXPOSE TO GLOBAL SCOPE FOR HTML ATTRIBUTES ---
         window.switchTab = switchTab;
@@ -1195,6 +1407,8 @@
         window.deleteAllSubjects = deleteAllSubjects;
         window.toggleScale = toggleScale;
         window.handleStudentIdChange = handleStudentIdChange;
+        window.openStatsModal = openStatsModal;
+        window.closeStatsModal = closeStatsModal;
     </script>
 </body>
 </html>
