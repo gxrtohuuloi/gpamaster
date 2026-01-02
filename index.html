@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>GPA Master</title>
+    <title>GPA Master - Liquid Glass</title>
     
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23137fec' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10v6M2 10l10-5 10 5-10 5z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5'/%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10v6M2 10l10-5 10 5-10 5z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,27 +24,28 @@
             },
             colors: {
               primary: {
-                DEFAULT: '#137fec',
-                hover: '#0f6bc9',
-                light: '#e6f2fe',
+                DEFAULT: '#3b82f6',
+                hover: '#2563eb',
               },
-              success: '#22c55e',
-              warning: '#eab308',
-              danger: '#ef4444',
+              glass: {
+                border: 'rgba(255, 255, 255, 0.5)',
+                surface: 'rgba(255, 255, 255, 0.2)',
+                shine: 'rgba(255, 255, 255, 0.4)',
+              },
             },
             keyframes: {
-                zoomIn: {
-                    '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
-                    '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+                floatSlow: {
+                    '0%, 100%': { transform: 'translate(0, 0) rotate(0deg)' },
+                    '50%': { transform: 'translate(20px, -20px) rotate(5deg)' },
                 },
-                fadeIn: {
-                    '0%': { opacity: '0' },
-                    '100%': { opacity: '1' },
+                shimmer: {
+                    '0%': { backgroundPosition: '200% 0' },
+                    '100%': { backgroundPosition: '-200% 0' }
                 }
             },
             animation: {
-                zoomIn: 'zoomIn 0.3s ease-out forwards',
-                fadeIn: 'fadeIn 0.2s ease-out forwards',
+                floatSlow: 'floatSlow 10s ease-in-out infinite',
+                shimmer: 'shimmer 3s linear infinite',
             }
           }
         }
@@ -54,469 +55,526 @@
     <style>
       body {
         font-family: 'Lexend', sans-serif;
-        background-color: #f0f2f5;
+        background-color: #f0f4f8;
+        color: #1e293b;
         overflow-x: hidden;
         -webkit-tap-highlight-color: transparent;
       }
 
-      /* GLOBAL SCROLLBAR HIDING */
-      * {
-          -ms-overflow-style: none !important;  /* IE and Edge */
-          scrollbar-width: none !important;  /* Firefox */
+      /* Animated Background Blobs */
+      .liquid-container {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
+        background: radial-gradient(circle at 50% 50%, #f8fafc, #eff6ff);
       }
-      
-      *::-webkit-scrollbar {
-          display: none !important;
-          width: 0 !important;
-          height: 0 !important;
-          background: transparent !important;
-      }
-
-      /* HIDE SPIN BUTTONS FOR NUMBER INPUTS */
-      input[type=number]::-webkit-outer-spin-button,
-      input[type=number]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-      input[type=number] {
-        -moz-appearance: textfield;
-      }
-
-      /* Liquid Background Animation */
       .liquid-blob {
-        position: absolute;
-        filter: blur(80px);
-        z-index: -1;
-        opacity: 0.6;
-        animation: float 20s infinite ease-in-out alternate;
-        will-change: transform;
+        position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6;
+        animation: blobFloat 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        mix-blend-mode: normal;
       }
-      
-      @keyframes float {
-        0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-        50% { transform: translate(100px, 50px) rotate(180deg) scale(1.1); }
-        100% { transform: translate(-50px, 100px) rotate(360deg) scale(0.9); }
+      @keyframes blobFloat {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(40px, -40px) scale(1.1); }
       }
 
-      .animation-delay-2000 { animation-delay: 2s; }
-      .animation-delay-4000 { animation-delay: 4s; }
-      .animation-delay-1000 { animation-delay: 1s; }
+      /* Noise Texture */
+      .noise-bg {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
 
-      /* Glassmorphism Utilities */
+      /* ULTRA GLASS STYLES */
       .glass-panel {
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: blur(16px) saturate(180%);
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        background: rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
         border: 1px solid rgba(255, 255, 255, 0.4);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
       }
 
       .glass-card {
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(20px) saturate(200%);
-        -webkit-backdrop-filter: blur(20px) saturate(200%);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255, 255, 255, 0.5);
-      }
-
-      .glass-input {
-        background: rgba(255, 255, 255, 0.4);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15));
+        backdrop-filter: blur(40px) saturate(160%);
+        -webkit-backdrop-filter: blur(40px) saturate(160%);
         border: 1px solid rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(4px);
-        transition: all 0.3s ease;
-        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.02);
+        border-top: 1px solid rgba(255, 255, 255, 0.8); /* Specular highlight */
+        border-left: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 
+            0 10px 40px -10px rgba(0, 0, 0, 0.05), 
+            inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        position: relative; 
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
       }
       
+      /* Subtle Shine Effect on Hover */
+      .glass-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 
+            0 20px 50px -10px rgba(0, 0, 0, 0.08), 
+            inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+      }
+
+      /* Inputs: "Cut-out" glass style */
+      .glass-input {
+        background: rgba(255, 255, 255, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-top: 1px solid rgba(0, 0, 0, 0.05); /* Inner shadow effect */
+        box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.02);
+        backdrop-filter: blur(10px);
+        color: #1e293b;
+        transition: all 0.3s ease;
+      }
       .glass-input:focus {
-        background: rgba(255, 255, 255, 0.85);
-        border-color: #137fec;
-        box-shadow: 0 0 0 4px rgba(19, 127, 236, 0.1);
+        background: rgba(255, 255, 255, 0.7);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), inset 0 0 0 1px rgba(255,255,255,0.8);
         outline: none;
       }
 
+      /* Buttons */
       .glass-button {
-        background: linear-gradient(135deg, #137fec, #3b82f6);
-        box-shadow: 0 4px 15px rgba(19, 127, 236, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        cursor: pointer;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 
+            0 4px 15px rgba(37, 99, 235, 0.3), 
+            inset 0 2px 0 rgba(255, 255, 255, 0.2);
+        color: white;
+        transition: all 0.3s;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.1);
       }
-      
       .glass-button:hover {
-        background: linear-gradient(135deg, #0f6bc9, #2563eb);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+        filter: brightness(1.05);
+      }
+      .glass-button:active { transform: translateY(0); }
+
+      .glass-button-secondary {
+        background: rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: #3b82f6;
+        transition: all 0.3s;
+      }
+      .glass-button-secondary:hover {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: #3b82f6;
         transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(19, 127, 236, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
       }
 
-      .glass-button:active {
-        transform: translateY(1px);
-      }
+      /* Custom Scrollbar for list */
+      .custom-scrollbar::-webkit-scrollbar { display: none; }
+      
+      /* Row Animation */
+      .table-row-anim { transition: all 0.2s; }
+      .table-row-anim:hover { background-color: rgba(255, 255, 255, 0.4); transform: scale(1.005); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
 
-      /* --- Animations --- */
-      .tab-content { animation: fadeEnter 0.4s ease-out forwards; }
-      .tab-content.hidden { display: none; }
-      @keyframes fadeEnter {
-        from { opacity: 0; transform: translateY(10px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
+      /* Sim Mode Overrides */
+      .sim-mode-active .glass-card { 
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(245, 243, 255, 0.4));
+        border-color: rgba(167, 139, 250, 0.3); 
+        box-shadow: 0 15px 40px -10px rgba(139, 92, 246, 0.1); 
       }
+      .sim-input {
+        background: rgba(255, 255, 255, 0.6);
+        border: 1px dashed #8b5cf6;
+        color: #7c3aed; font-weight: 700; text-align: center; border-radius: 8px; width: 100%; padding: 6px;
+        transition: all 0.2s;
+      }
+      .sim-input:focus { background: #fff; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); transform: scale(1.05); }
 
-      @keyframes slideInRow {
-        from { opacity: 0; transform: translateX(-20px); }
-        to { opacity: 1; transform: translateX(0); }
-      }
-      @keyframes slideOutRow {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(20px); }
-      }
-      .row-enter { animation: slideInRow 0.3s ease-out forwards; }
-      .row-exit { animation: slideOutRow 0.3s ease-in forwards; pointer-events: none; }
+      /* Animations */
+      @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+      .animate-enter { animation: fadeInScale 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
-      .scale-enter { animation: expandHeight 0.3s ease-out forwards; }
-      @keyframes expandHeight {
-        from { opacity: 0; max-height: 0; transform: translateY(-10px); }
-        to { opacity: 1; max-height: 500px; transform: translateY(0); }
-      }
-
-      .status-pulse { animation: pulseStatus 2s infinite; }
-      @keyframes pulseStatus {
-        0% { opacity: 0.6; }
-        50% { opacity: 1; } 
-        100% { opacity: 0.6; }
-      }
     </style>
 </head>
 <body>
 
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="liquid-blob w-[500px] h-[500px] bg-blue-400/30 rounded-full top-[-10%] left-[-10%] mix-blend-multiply"></div>
-        <div class="liquid-blob w-[400px] h-[400px] bg-purple-400/30 rounded-full top-[40%] right-[-5%] mix-blend-multiply animation-delay-2000"></div>
-        <div class="liquid-blob w-[600px] h-[600px] bg-pink-300/30 rounded-full bottom-[-20%] left-[20%] mix-blend-multiply animation-delay-4000"></div>
-        <div class="liquid-blob w-[300px] h-[300px] bg-green-300/30 rounded-full top-[10%] right-[30%] mix-blend-multiply animation-delay-1000"></div>
+    <!-- Enhanced Background -->
+    <div class="liquid-container">
+        <!-- More vibrant, gem-like colors for better glass effect -->
+        <div class="liquid-blob w-[700px] h-[700px] bg-[#3b82f6] top-[-10%] left-[-10%] opacity-20 filter blur-[80px]"></div>
+        <div class="liquid-blob w-[600px] h-[600px] bg-[#8b5cf6] top-[20%] right-[-15%] opacity-20 filter blur-[90px]" style="animation-duration: 25s; animation-delay: -5s"></div>
+        <div class="liquid-blob w-[500px] h-[500px] bg-[#ec4899] bottom-[-10%] left-[20%] opacity-15 filter blur-[100px]" style="animation-duration: 22s; animation-delay: -10s"></div>
+        <div class="liquid-blob w-[400px] h-[400px] bg-[#06b6d4] bottom-[20%] right-[30%] opacity-15 filter blur-[70px]" style="animation-duration: 28s; animation-delay: -15s"></div>
     </div>
+    
+    <div class="noise-bg"></div>
 
-    <div class="relative min-h-screen flex flex-col font-sans text-gray-900 overflow-hidden">
+    <div class="relative min-h-screen flex flex-col font-sans overflow-hidden z-10" id="app-container">
         
-        <header class="sticky top-0 z-50 glass-panel border-b-0 border-b border-white/30 shadow-sm transition-all">
-            <!-- Adjusted Flex Layout for Better Responsiveness -->
-            <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 px-4 py-3 lg:px-20 relative z-50">
-                <!-- Logo: Order 1 on all -->
-                <div class="flex items-center gap-3 shrink-0 z-20 order-1">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 text-primary border border-white/40 shadow-inner">
-                        <i data-lucide="graduation-cap" class="h-6 w-6"></i>
-                    </div>
-                    <h2 class="hidden sm:block text-gray-900 text-xl font-bold leading-tight tracking-tight drop-shadow-sm">GPA Master</h2>
-                </div>
-
-                <!-- Navigation Tabs: Order 3 on mobile (new line), Order 2 on Desktop (center flow) -->
-                <!-- Removed absolute positioning to prevent overlap -->
-                <div class="order-3 md:order-2 w-full md:w-auto flex justify-center z-10">
-                    <div class="flex bg-white/40 rounded-full p-1 border border-white/40 backdrop-blur-md shadow-inner">
-                        <button onclick="switchTab('calculator')" id="nav-calculator" class="relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary">
-                            Tính điểm
-                        </button>
-                        <button onclick="switchTab('goal')" id="nav-goal" class="relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40">
-                            Mục tiêu
-                        </button>
-                    </div>
-                </div>
-
-                <!-- User Profile/Input: Order 2 on mobile (right), Order 3 on Desktop (right) -->
-                <div class="flex items-center gap-3 relative z-20 order-2 md:order-3 justify-end md:justify-start flex-1 md:flex-none">
-                    <div class="hidden md:flex flex-col items-end">
-                        <span id="save-status-text" class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">OFFLINE</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-2 bg-white/50 rounded-xl px-3 py-2 border border-white/50 shadow-sm backdrop-blur-md transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 group/input">
-                        <div class="relative">
-                            <i data-lucide="user-circle-2" class="w-5 h-5 text-primary/70"></i>
-                            <div id="status-dot" class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-gray-400 border border-white"></div>
+        <!-- Header: Ultra frosted strip -->
+        <header class="sticky top-0 z-50 transition-all pt-2 px-2 lg:pt-4 lg:px-6">
+            <div class="glass-panel rounded-2xl mx-auto max-w-[1200px] backdrop-blur-xl">
+                <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 px-4 py-3 relative z-50">
+                    <!-- Logo -->
+                    <div class="flex items-center gap-3 shrink-0 z-20 order-1 group cursor-default">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30 ring-1 ring-white/40 transition-transform group-hover:rotate-12">
+                            <i data-lucide="graduation-cap" class="h-6 w-6"></i>
                         </div>
-                        <input 
-                            id="student-id" 
-                            type="text" 
-                            placeholder="MSSV" 
-                            onchange="handleStudentIdChange(this.value)" 
-                            onkeydown="if(event.key === 'Enter') this.blur()"
-                            class="bg-transparent border-none p-0 text-sm font-black text-gray-800 placeholder-gray-400 w-32 sm:w-40 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left"
-                        >
-                        <div id="loading-indicator" class="hidden">
-                             <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-primary"></i>
+                        <h2 class="hidden sm:block text-slate-800 text-xl font-bold tracking-tight drop-shadow-sm">GPA <span class="text-blue-600">Master</span></h2>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="order-3 md:order-2 w-full md:w-auto flex justify-center z-10">
+                        <div class="flex bg-white/20 rounded-full p-1.5 border border-white/30 backdrop-blur-md shadow-inner">
+                            <button onclick="switchTab('calculator')" id="nav-calculator" class="relative z-10 rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-sm text-blue-600 ring-1 ring-black/5">
+                                Tính điểm
+                            </button>
+                            <button onclick="switchTab('goal')" id="nav-goal" class="relative z-10 rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/30">
+                                Mục tiêu
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- User Profile & Sim Toggle -->
+                    <div class="flex items-center gap-4 relative z-20 order-2 md:order-3 justify-end md:justify-start flex-1 md:flex-none">
+                         <!-- What-if Toggle -->
+                         <div class="hidden md:flex items-center gap-3 mr-2 bg-white/30 rounded-full pl-1 pr-4 py-1 border border-white/20 shadow-sm">
+                            <label class="inline-flex items-center cursor-pointer relative">
+                                <input type="checkbox" id="sim-toggle" class="sr-only peer" onchange="toggleSimulation()">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:shadow-sm peer-checked:bg-purple-500 border border-slate-300/50"></div>
+                                <span class="ml-2 text-xs font-bold text-slate-600 peer-checked:text-purple-700 transition-colors select-none">Dự tính</span>
+                            </label>
+                        </div>
+
+                        <div class="hidden md:flex flex-col items-end">
+                            <span id="save-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">OFFLINE</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 bg-white/30 hover:bg-white/50 rounded-xl px-3 py-2 border border-white/40 shadow-sm backdrop-blur-md transition-all focus-within:bg-white/80 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-300 group/input">
+                            <div class="relative">
+                                <i data-lucide="user-circle-2" class="w-5 h-5 text-slate-600 group-focus-within/input:text-blue-600 transition-colors"></i>
+                                <div id="status-dot" class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-slate-400 ring-2 ring-white"></div>
+                            </div>
+                            <input 
+                                id="student-id" 
+                                type="text" 
+                                placeholder="MSSV" 
+                                onchange="handleStudentIdChange(this.value)" 
+                                onkeydown="if(event.key === 'Enter') this.blur()"
+                                class="bg-transparent border-none p-0 text-sm font-bold text-slate-700 placeholder-slate-400 w-24 sm:w-32 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left transition-all"
+                            >
                         </div>
                     </div>
                 </div>
             </div>
         </header>
 
-        <main class="flex-grow w-full max-w-[1200px] mx-auto px-4 py-6 lg:px-8 lg:py-10 z-10 relative">
+        <main class="flex-grow w-full max-w-[1200px] mx-auto px-4 py-8 z-10 relative">
             
-            <div id="tab-content-calculator" class="tab-content">
-                <div class="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-12 items-start">
-                    
-                    <div class="flex flex-col gap-6 lg:col-span-8 order-1 lg:order-1">
+            <!-- Skeleton Loading Block -->
+            <div id="loading-skeleton" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 animate-pulse">
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="h-64 rounded-[2rem] bg-white/20 border border-white/20 backdrop-blur-sm"></div>
+                    <div class="h-96 rounded-[2rem] bg-white/20 border border-white/20 backdrop-blur-sm"></div>
+                </div>
+                <div class="lg:col-span-4">
+                    <div class="h-80 rounded-[2rem] bg-white/20 border border-white/20 backdrop-blur-sm"></div>
+                </div>
+            </div>
 
-                        <div class="glass-card rounded-3xl p-5 lg:p-6">
-                            <h3 class="mb-4 flex items-center gap-2 text-lg font-bold text-gray-800">
-                                <div class="bg-primary/20 p-2 rounded-lg text-primary">
-                                    <i data-lucide="plus" class="w-5 h-5"></i>
-                                </div>
-                                Nhập thông tin môn học
-                            </h3>
-                            
-                            <div class="flex flex-col gap-4">
-                                <div class="flex flex-col gap-1.5">
-                                    <label class="text-sm font-medium text-gray-700 ml-1">Tên môn học</label>
-                                    <input 
-                                        id="input-name" 
-                                        type="text" 
-                                        placeholder="Ví dụ: Đại Số Tuyến Tính" 
-                                        class="glass-input h-12 w-full rounded-xl px-4 text-sm text-gray-800 placeholder:text-gray-400 capitalize"
-                                        onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()"
-                                    >
-                                </div>
-                                
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-gray-700 ml-1">Số tín chỉ</label>
-                                        <input 
-                                            id="input-credits" 
-                                            type="number" 
-                                            placeholder="3" 
-                                            inputmode="numeric"
-                                            class="glass-input h-12 w-full rounded-xl px-4 text-sm text-gray-800 placeholder:text-gray-400"
-                                            onkeydown="if(event.key === 'Enter') document.getElementById('input-score').focus()"
-                                        >
+            <div id="main-content" class="block">
+                <div id="tab-content-calculator" class="tab-content animate-enter">
+                    <div class="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-12 items-start">
+                        
+                        <div class="flex flex-col gap-6 lg:col-span-8 order-1 lg:order-1">
+
+                            <!-- Input Card -->
+                            <div class="glass-card rounded-[2.5rem] p-6 lg:p-8">
+                                <h3 class="mb-6 flex items-center gap-3 text-lg font-bold text-slate-800">
+                                    <div class="bg-blue-500/10 p-2.5 rounded-xl text-blue-600 ring-1 ring-blue-500/20 shadow-sm">
+                                        <i data-lucide="plus" class="w-5 h-5"></i>
                                     </div>
-                                    <div class="flex flex-col gap-1.5">
-                                        <label class="text-sm font-medium text-gray-700 ml-1">Điểm (hệ 10)</label>
-                                        <input id="input-score" type="text" placeholder="8.5" inputmode="decimal" class="glass-input h-12 w-full rounded-xl px-4 text-sm text-gray-800 placeholder:text-gray-400" onkeydown="if(event.key === 'Enter') addSubject()">
-                                    </div>
-                                </div>
+                                    Nhập thông tin môn học
+                                </h3>
                                 
-                                <div class="flex items-center gap-3 pt-1">
-                                    <button id="btn-accumulate" onclick="toggleNewAccumulate()" class="flex items-center gap-2 h-12 px-4 rounded-xl transition-all duration-300 border active:scale-95 bg-blue-50 border-blue-200 text-primary shadow-sm" title="Tích lũy vào GPA?">
-                                        <i data-lucide="check-circle-2" class="h-5 w-5"></i>
-                                        <span class="text-sm font-bold whitespace-nowrap">Tích lũy</span>
-                                    </button>
+                                <div class="flex flex-col gap-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                        <div class="md:col-span-2 flex flex-col gap-2">
+                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Tên môn học</label>
+                                            <input id="input-name" type="text" placeholder="Ví dụ: Đại Số Tuyến Tính" class="glass-input h-14 w-full rounded-2xl px-5 text-base font-semibold placeholder:font-normal placeholder:text-slate-400" onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()">
+                                        </div>
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Học kỳ</label>
+                                            <div class="relative group">
+                                                <select id="input-semester" class="glass-input h-14 w-full rounded-2xl px-5 text-base font-semibold appearance-none cursor-pointer hover:bg-white/40 transition-colors">
+                                                    <!-- Generated via JS -->
+                                                </select>
+                                                <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none group-hover:text-blue-600 transition-colors"></i>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
-                                    <button onclick="addSubject()" class="glass-button flex-1 h-12 flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-95 shadow-lg shadow-blue-500/30">
-                                        <i data-lucide="plus" class="h-5 w-5"></i>
-                                        Thêm môn
+                                    <div class="grid grid-cols-2 gap-5">
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Số tín chỉ</label>
+                                            <input id="input-credits" type="number" placeholder="3" inputmode="numeric" class="glass-input h-14 w-full rounded-2xl px-5 text-base font-semibold placeholder:font-normal placeholder:text-slate-400" onkeydown="if(event.key === 'Enter') document.getElementById('input-score').focus()">
+                                        </div>
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Điểm (hệ 10)</label>
+                                            <input id="input-score" type="text" placeholder="8.5" inputmode="decimal" class="glass-input h-14 w-full rounded-2xl px-5 text-base font-semibold placeholder:font-normal placeholder:text-slate-400" onkeydown="if(event.key === 'Enter') addSubject()">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-4 pt-2">
+                                        <button id="btn-accumulate" onclick="toggleNewAccumulate()" class="glass-button-secondary flex items-center gap-2 h-14 px-5 rounded-2xl active:scale-95" title="Tích lũy vào GPA?">
+                                            <i data-lucide="check-circle-2" class="h-5 w-5"></i>
+                                            <span class="text-sm font-bold whitespace-nowrap">Tích lũy</span>
+                                        </button>
+                                        
+                                        <button onclick="addSubject()" id="btn-add-main" class="glass-button flex-1 h-14 flex items-center justify-center gap-2 rounded-2xl text-base font-bold active:scale-95 shadow-blue-500/20">
+                                            <i data-lucide="plus" class="h-5 w-5"></i>
+                                            Thêm môn học
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- List Card -->
+                            <div class="flex flex-col overflow-hidden glass-card rounded-[2.5rem] order-3 lg:order-2 transition-colors duration-500" id="list-card">
+                                <div class="flex items-center justify-between border-b border-white/30 bg-white/10 px-6 py-5 backdrop-blur-md">
+                                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                        Danh sách môn
+                                        <span id="sim-badge" class="hidden text-[10px] bg-purple-100/80 text-purple-700 px-2 py-0.5 rounded-md border border-purple-200 uppercase tracking-wider animate-pulse font-bold shadow-sm">Chế độ dự tính</span>
+                                    </h3>
+                                    <button onclick="deleteAllSubjects()" id="btn-delete-all" class="flex items-center gap-2 text-xs font-bold text-red-500 hover:text-red-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50/50 active:bg-red-100 ring-1 ring-transparent hover:ring-red-200">
+                                        <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                                        <span class="hidden sm:inline">Xóa tất cả</span>
                                     </button>
                                 </div>
+                                <div class="overflow-x-auto custom-scrollbar">
+                                    <table class="w-full border-collapse text-left min-w-[650px] md:min-w-0">
+                                        <thead class="bg-white/10 text-slate-500 border-b border-white/20">
+                                            <tr>
+                                                <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider hidden sm:table-cell pl-6">STT</th>
+                                                <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider w-1/3">Môn học</th>
+                                                <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider">TC</th>
+                                                <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider">Tích lũy</th>
+                                                <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider">Điểm (10)</th>
+                                                <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider text-blue-600">Điểm (4)</th>
+                                                <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider">Chữ</th>
+                                                <th class="px-4 py-4 text-right text-xs font-bold uppercase tracking-wider pr-6">Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="subject-list" class="divide-y divide-white/20"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col overflow-hidden glass-card rounded-3xl order-3 lg:order-2">
-                            <div class="flex items-center justify-between border-b border-white/30 bg-white/30 px-4 py-3 md:px-6 md:py-4 backdrop-blur-sm">
-                                <h3 class="text-lg font-bold text-gray-800">Danh sách môn</h3>
-                                <button onclick="deleteAllSubjects()" class="flex items-center gap-1 text-sm font-medium text-danger hover:text-red-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50/50 active:bg-red-100">
-                                    <i data-lucide="trash-2" class="h-4 w-4"></i>
-                                    <span class="hidden sm:inline">Xóa tất cả</span>
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto scroll-smooth">
-                                <table class="w-full border-collapse text-left min-w-[650px] md:min-w-0">
-                                    <thead class="bg-white/20">
-                                        <tr>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 hidden sm:table-cell">STT</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 w-1/3">Môn học</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">TC</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Tích lũy</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Điểm (10)</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-center text-xs font-semibold uppercase tracking-wider text-primary">Điểm (4)</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Chữ</th>
-                                            <th class="px-3 py-3 md:px-6 md:py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">Xóa</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="subject-list" class="divide-y divide-white/30"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                        <!-- Sidebar Stats -->
+                        <div class="flex flex-col gap-6 lg:col-span-4 order-2 lg:order-2 lg:sticky lg:top-28">
+                            
+                            <!-- Main Stats Card: Gradient Glass -->
+                            <div class="group/stats relative overflow-hidden rounded-[2.5rem] p-8 text-white shadow-2xl shadow-blue-500/20 border border-white/30 transition-all hover:translate-y-[-4px] duration-500">
+                                 <!-- Dynamic background -->
+                                 <div class="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-indigo-600/90 to-purple-600/90 transition-all duration-500 backdrop-blur-md" id="stats-bg"></div>
+                                 <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay"></div>
+                                 
+                                 <!-- Glows -->
+                                 <div class="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-cyan-400 blur-[80px] opacity-40 group-hover/stats:opacity-60 transition-opacity duration-1000"></div>
+                                 <div class="absolute -left-12 -bottom-12 h-40 w-40 rounded-full bg-pink-500 blur-[80px] opacity-40 group-hover/stats:opacity-60 transition-opacity duration-1000 delay-100"></div>
 
-                    <div class="flex flex-col gap-6 lg:col-span-4 order-2 lg:order-2 lg:sticky lg:top-24">
-                        <div class="group/stats relative overflow-hidden rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20 border border-white/20 transition-transform active:scale-[0.99]"
-                             style="background: linear-gradient(135deg, rgba(19, 127, 236, 0.9), rgba(59, 130, 246, 0.8)); backdrop-filter: blur(20px);">
-                             
-                             <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
-                             <div class="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-white/20 blur-3xl group-hover/stats:scale-150 transition-transform duration-700"></div>
+                                 <div class="relative z-10">
+                                     <h3 class="text-lg font-medium opacity-90 tracking-wide flex items-center justify-between mb-8">
+                                         Kết quả học tập
+                                         <button onclick="openStatsModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/20 shadow-lg backdrop-blur-md group/btn hover:scale-105 active:scale-95">
+                                             <i data-lucide="bar-chart-2" class="h-4 w-4 text-white"></i>
+                                             <span class="text-xs font-bold text-white">Chi tiết</span>
+                                         </button>
+                                     </h3>
+                                     
+                                     <div class="flex flex-col gap-1 mb-8">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm font-medium text-blue-100">GPA (Hệ 4)</span>
+                                            <span id="sim-label" class="hidden text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded text-white animate-pulse border border-white/30">DỰ KIẾN</span>
+                                        </div>
+                                        <div class="flex items-baseline gap-2 flex-wrap">
+                                          <span id="stat-gpa4" class="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter drop-shadow-md bg-gradient-to-b from-white to-blue-100/80 bg-clip-text text-transparent pb-2 pr-2 leading-none">0.00</span>
+                                          
+                                          <!-- Sim Delta -->
+                                          <div id="sim-delta" class="hidden flex flex-col items-start ml-2 bg-black/20 rounded-lg px-2 py-1 backdrop-blur-sm">
+                                              <span class="text-[10px] text-white/70 font-bold uppercase">Thực tế: <span id="real-gpa-val" class="text-white">0.00</span></span>
+                                              <span id="diff-val" class="text-sm font-black text-green-300 drop-shadow-sm leading-none mt-0.5">+0.00</span>
+                                          </div>
 
-                             <h3 class="relative z-10 text-lg font-medium opacity-90 tracking-wide flex items-center justify-between">
-                                 Kết quả học tập
-                                 <button onclick="openStatsModal()" class="flex items-center gap-1.5 p-1.5 pr-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/10 shadow-sm backdrop-blur-sm group/btn">
-                                     <div class="p-1 rounded-full bg-white/20">
-                                        <i data-lucide="bar-chart-2" class="h-4 w-4 text-white"></i>
+                                          <span class="text-xl font-medium text-blue-200 ml-auto opacity-80">/ 4.0</span>
+                                        </div>
                                      </div>
-                                     <span class="text-xs font-bold text-white/90">Chi tiết</span>
-                                 </button>
-                             </h3>
-                             
-                             <div class="relative z-10 mt-6 flex flex-col gap-1">
-                                <span class="text-sm font-light opacity-80">GPA (Hệ 4)</span>
-                                <div class="flex items-baseline gap-2">
-                                  <span id="stat-gpa4" class="text-6xl font-black tracking-tighter drop-shadow-md">0.00</span>
-                                  <span class="text-lg font-medium opacity-70">/ 4.0</span>
-                                </div>
-                             </div>
 
-                             <div class="relative z-10 mt-6 grid grid-cols-2 gap-4 border-t border-white/20 pt-4">
-                                <div>
-                                  <span class="mb-1 block text-xs opacity-70">GPA (Hệ 10)</span>
-                                  <span id="stat-gpa10" class="text-2xl font-bold">0.00</span>
-                                </div>
-                                <div>
-                                  <span class="mb-1 block text-xs opacity-70">Tổng tín chỉ</span>
-                                  <span id="stat-credits" class="text-2xl font-bold">0</span>
-                                </div>
-                                <div class="col-span-2 mt-2">
-                                  <span class="mb-1 block text-xs opacity-70">Xếp loại</span>
-                                  <span id="stat-classification" class="inline-block rounded-lg border border-white/20 bg-white/20 px-4 py-1.5 text-sm font-bold backdrop-blur-md shadow-lg">
-                                    Chưa xếp loại
-                                  </span>
-                                </div>
-                             </div>
-                        </div>
+                                     <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-6">
+                                        <div class="bg-white/10 rounded-2xl p-3 border border-white/10">
+                                          <span class="mb-1 block text-[10px] font-bold text-blue-200 uppercase tracking-wider">GPA (Hệ 10)</span>
+                                          <span id="stat-gpa10" class="text-2xl font-bold">0.00</span>
+                                        </div>
+                                        <div class="bg-white/10 rounded-2xl p-3 border border-white/10">
+                                          <span class="mb-1 block text-[10px] font-bold text-blue-200 uppercase tracking-wider">Tổng tín chỉ</span>
+                                          <span id="stat-credits" class="text-2xl font-bold">0</span>
+                                        </div>
+                                        <div class="col-span-2 mt-2">
+                                          <div class="flex items-center justify-between bg-white/20 rounded-xl px-4 py-3 border border-white/20 shadow-lg backdrop-blur-md">
+                                              <span class="text-xs font-bold text-blue-100 uppercase">Xếp loại</span>
+                                              <span id="stat-classification" class="text-sm font-black text-white drop-shadow-sm">Chưa xếp loại</span>
+                                          </div>
+                                        </div>
+                                     </div>
+                                 </div>
+                            </div>
 
-                        <div class="glass-card rounded-3xl p-5 order-last">
-                            <button onclick="toggleScale()" class="flex w-full items-center justify-between text-base font-bold text-gray-800 hover:text-primary transition-colors py-1">
-                                <span>Thang điểm tham khảo</span>
-                                <div class="bg-white/50 p-1.5 rounded-full shadow-sm">
-                                    <i id="icon-scale-toggle" data-lucide="info" class="h-5 w-5 text-gray-500 transition-transform duration-300"></i>
+                            <!-- Reference Table -->
+                            <div class="glass-card rounded-[2.5rem] p-6 order-last">
+                                <button onclick="toggleScale()" class="flex w-full items-center justify-between text-base font-bold text-slate-800 hover:text-blue-600 transition-colors py-1 group">
+                                    <span>Thang điểm tham khảo</span>
+                                    <div class="bg-white/50 p-2 rounded-full shadow-sm ring-1 ring-white/60 group-hover:ring-blue-200 transition-all backdrop-blur-sm">
+                                        <i id="icon-scale-toggle" data-lucide="chevron-down" class="h-5 w-5 text-slate-500 transition-transform duration-300"></i>
+                                    </div>
+                                </button>
+                                <div id="scale-table" class="hidden overflow-hidden pt-4">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr class="border-b border-slate-200/50 text-slate-500">
+                                                <th class="py-2 text-left">Điểm (10)</th>
+                                                <th class="py-2 text-center">Chữ</th>
+                                                <th class="py-2 text-right">Điểm (4)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-200/40">
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">9.0 - 10.0</td><td class="py-2.5 text-center"><span class="font-bold bg-green-100/80 text-green-700 px-2 py-0.5 rounded border border-green-200">A</span></td><td class="py-2.5 text-right font-black text-blue-600">4.0</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">8.0 - 8.9</td><td class="py-2.5 text-center"><span class="font-bold bg-blue-100/80 text-blue-700 px-2 py-0.5 rounded border border-blue-200">B+</span></td><td class="py-2.5 text-right font-black text-blue-600">3.5</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">7.0 - 7.9</td><td class="py-2.5 text-center"><span class="font-bold bg-cyan-100/80 text-cyan-700 px-2 py-0.5 rounded border border-cyan-200">B</span></td><td class="py-2.5 text-right font-black text-blue-600">3.0</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">6.5 - 6.9</td><td class="py-2.5 text-center"><span class="font-bold bg-yellow-100/80 text-yellow-700 px-2 py-0.5 rounded border border-yellow-200">C+</span></td><td class="py-2.5 text-right font-black text-blue-600">2.5</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">5.5 - 6.4</td><td class="py-2.5 text-center"><span class="font-bold bg-orange-100/80 text-orange-700 px-2 py-0.5 rounded border border-orange-200">C</span></td><td class="py-2.5 text-right font-black text-blue-600">2.0</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">5.0 - 5.4</td><td class="py-2.5 text-center"><span class="font-bold bg-red-100/80 text-red-700 px-2 py-0.5 rounded border border-red-200">D+</span></td><td class="py-2.5 text-right font-black text-blue-600">1.5</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">4.0 - 4.9</td><td class="py-2.5 text-center"><span class="font-bold bg-red-100/80 text-red-800 px-2 py-0.5 rounded border border-red-200">D</span></td><td class="py-2.5 text-right font-black text-blue-600">1.0</td></tr>
+                                            <tr class="text-slate-700 hover:bg-white/30 table-row-anim"><td class="py-2.5 font-medium">&lt; 4.0</td><td class="py-2.5 text-center"><span class="font-bold bg-slate-200/80 text-slate-600 px-2 py-0.5 rounded border border-slate-300">F</span></td><td class="py-2.5 text-right font-black text-slate-400">0.0</td></tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </button>
-                            <div id="scale-table" class="hidden overflow-hidden pt-4">
-                                <table class="w-full text-xs">
-                                    <thead>
-                                        <tr class="border-b border-gray-200/50 text-gray-500">
-                                            <th class="py-2 text-left">Điểm (10)</th>
-                                            <th class="py-2 text-center">Chữ</th>
-                                            <th class="py-2 text-right">Điểm (4)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200/40">
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">9.0 - 10.0</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">A</td><td class="py-2.5 text-right font-black text-primary">4.0</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">8.0 - 8.9</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">B+</td><td class="py-2.5 text-right font-black text-primary">3.5</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">7.0 - 7.9</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">B</td><td class="py-2.5 text-right font-black text-primary">3.0</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">6.5 - 6.9</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">C+</td><td class="py-2.5 text-right font-black text-primary">2.5</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">5.5 - 6.4</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">C</td><td class="py-2.5 text-right font-black text-primary">2.0</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">5.0 - 5.4</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">D+</td><td class="py-2.5 text-right font-black text-primary">1.5</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">4.0 - 4.9</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">D</td><td class="py-2.5 text-right font-black text-primary">1.0</td></tr>
-                                        <tr class="text-gray-800"><td class="py-2.5 font-medium">&lt; 4.0</td><td class="py-2.5 text-center font-bold bg-gray-50/30 rounded">F</td><td class="py-2.5 text-right font-black text-gray-400">0.0</td></tr>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="tab-content-goal" class="tab-content hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <div class="lg:col-span-4 flex flex-col gap-6 glass-card p-6 rounded-3xl h-fit">
-                        <h3 class="text-lg font-bold text-gray-800 border-b border-white/40 pb-3">Thông số đầu vào</h3>
-                        <div class="flex flex-col gap-5">
-                            <label class="flex flex-col w-full group opacity-75">
-                                <span class="text-gray-600 text-sm font-medium pb-2 flex items-center gap-2">
-                                    <i data-lucide="history" class="h-4 w-4 text-gray-400"></i> 
-                                    GPA Hiện tại
-                                    <span class="ml-auto text-[10px] bg-gray-200/50 px-2 py-0.5 rounded-full text-gray-500 font-bold flex items-center gap-1">
-                                      <i data-lucide="lock" class="w-2.5 h-2.5"></i> Tự động
+                <div id="tab-content-goal" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div class="lg:col-span-4 flex flex-col gap-6 glass-card p-8 rounded-[2.5rem] h-fit">
+                            <h3 class="text-lg font-bold text-slate-800 border-b border-white/30 pb-4">Thông số đầu vào</h3>
+                            <div class="flex flex-col gap-6">
+                                <label class="flex flex-col w-full group opacity-75">
+                                    <span class="text-slate-500 text-xs font-bold uppercase tracking-wider pb-2 flex items-center gap-2">
+                                        <i data-lucide="history" class="h-4 w-4"></i> 
+                                        GPA Hiện tại
+                                        <span class="ml-auto text-[10px] bg-slate-100/50 px-2 py-0.5 rounded-md text-slate-500 font-bold border border-slate-200">
+                                          AUTO
+                                        </span>
                                     </span>
-                                </span>
-                                <input id="goal-current-gpa" type="text" readonly disabled class="glass-input h-12 w-full rounded-xl px-4 text-gray-500 font-bold outline-none bg-gray-100/50 cursor-not-allowed border-dashed">
-                            </label>
-                            
-                            <label class="flex flex-col w-full group opacity-75">
-                                <span class="text-gray-600 text-sm font-medium pb-2 flex items-center gap-2">
-                                    <i data-lucide="calculator" class="h-4 w-4 text-gray-400"></i> 
-                                    Tín chỉ tính điểm
-                                    <span class="ml-auto text-[10px] bg-gray-200/50 px-2 py-0.5 rounded-full text-gray-500 font-bold flex items-center gap-1">
-                                      <i data-lucide="lock" class="w-2.5 h-2.5"></i> Tự động
+                                    <input id="goal-current-gpa" type="text" readonly disabled class="glass-input h-12 w-full rounded-xl px-4 text-slate-500 font-bold outline-none bg-slate-50/30 cursor-not-allowed border-dashed">
+                                </label>
+                                
+                                <label class="flex flex-col w-full group opacity-75">
+                                    <span class="text-slate-500 text-xs font-bold uppercase tracking-wider pb-2 flex items-center gap-2">
+                                        <i data-lucide="calculator" class="h-4 w-4"></i> 
+                                        Tín chỉ tích lũy
+                                        <span class="ml-auto text-[10px] bg-slate-100/50 px-2 py-0.5 rounded-md text-slate-500 font-bold border border-slate-200">
+                                          AUTO
+                                        </span>
                                     </span>
-                                </span>
-                                <input id="goal-accumulated-credits" type="text" readonly disabled class="glass-input h-12 w-full rounded-xl px-4 text-gray-500 font-bold outline-none bg-gray-100/50 cursor-not-allowed border-dashed">
-                            </label>
+                                    <input id="goal-accumulated-credits" type="text" readonly disabled class="glass-input h-12 w-full rounded-xl px-4 text-slate-500 font-bold outline-none bg-slate-50/30 cursor-not-allowed border-dashed">
+                                </label>
 
-                            <div class="h-px bg-white/40 my-1"></div>
-                            <label class="flex flex-col w-full group">
-                                <span class="text-gray-700 text-sm font-medium pb-2 flex items-center gap-2 group-focus-within:text-primary transition-colors">
-                                    <i data-lucide="target" class="h-4 w-4 text-primary"></i> GPA Mục tiêu
-                                </span>
-                                <input id="goal-target-gpa" type="text" placeholder="Ví dụ: 3.6" inputmode="decimal" class="glass-input h-12 w-full rounded-xl px-4 text-gray-800 font-medium outline-none placeholder:text-gray-400 font-normal focus:bg-white">
-                            </label>
-                            <label class="flex flex-col w-full group">
-                                <span class="text-gray-700 text-sm font-medium pb-2 flex items-center gap-2 group-focus-within:text-primary transition-colors">
-                                    <i data-lucide="flag" class="h-4 w-4 text-gray-500 group-focus-within:text-primary"></i> Tín chỉ mục tiêu
-                                </span>
-                                <input id="goal-target-credits" type="text" placeholder="Ví dụ: 30" inputmode="numeric" class="glass-input h-12 w-full rounded-xl px-4 text-gray-800 font-medium outline-none placeholder:text-gray-400 font-normal focus:bg-white">
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-8 flex flex-col gap-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
-                                <div id="blob-required" class="absolute -right-2 -top-2 h-32 w-32 rounded-full blur-2xl transition-all duration-700 bg-green-500/20 group-hover:bg-green-500/30"></div>
-                                <div>
-                                    <p class="text-gray-600 text-sm font-medium mb-1">Điểm TB cần đạt (phần mục tiêu)</p>
-                                    <div class="flex items-baseline gap-2">
-                                        <h2 id="goal-required-gpa" class="text-5xl font-black tracking-tight drop-shadow-sm text-green-600">---</h2>
-                                        <span class="text-sm font-bold text-gray-400">/ 4.0</span>
-                                    </div>
-                                </div>
-                                <div id="goal-possibility-badge" class="mt-4 hidden items-center gap-2 text-sm font-bold px-3 py-1.5 rounded-lg w-fit backdrop-blur-md"></div>
-                            </div>
-
-                            <div class="glass-card p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
-                                <div>
-                                    <p class="text-gray-600 text-sm font-medium mb-1">Chênh lệch GPA cần tăng</p>
-                                    <div class="flex items-baseline gap-2">
-                                         <h2 id="goal-diff" class="text-5xl font-black tracking-tight drop-shadow-sm text-gray-700">0.00</h2>
-                                    </div>
-                                </div>
-                                <div class="mt-4 w-full bg-gray-200/50 h-3 rounded-full overflow-hidden border border-white/30 backdrop-blur-sm">
-                                    <div id="goal-progress" class="bg-gradient-to-r from-blue-400 to-blue-600 h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
-                                </div>
-                                <p id="goal-summary-text" class="mt-3 text-xs text-gray-500 font-medium">Nhập thông tin để xem kết quả</p>
+                                <div class="h-px bg-gradient-to-r from-transparent via-slate-300/50 to-transparent my-1"></div>
+                                
+                                <label class="flex flex-col w-full group">
+                                    <span class="text-blue-600 text-xs font-bold uppercase tracking-wider pb-2 flex items-center gap-2 transition-colors">
+                                        <i data-lucide="target" class="h-4 w-4"></i> GPA Mục tiêu
+                                    </span>
+                                    <input id="goal-target-gpa" type="text" placeholder="Ví dụ: 3.6" inputmode="decimal" class="glass-input h-14 w-full rounded-2xl px-5 text-slate-800 font-bold outline-none placeholder:text-slate-400 placeholder:font-normal focus:bg-white/80">
+                                </label>
+                                <label class="flex flex-col w-full group">
+                                    <span class="text-blue-600 text-xs font-bold uppercase tracking-wider pb-2 flex items-center gap-2 transition-colors">
+                                        <i data-lucide="flag" class="h-4 w-4"></i> Tín chỉ mục tiêu
+                                    </span>
+                                    <input id="goal-target-credits" type="text" placeholder="Ví dụ: 30" inputmode="numeric" class="glass-input h-14 w-full rounded-2xl px-5 text-slate-800 font-bold outline-none placeholder:text-slate-400 placeholder:font-normal focus:bg-white/80">
+                                </label>
                             </div>
                         </div>
 
-                        <div id="goal-chart-container" class="glass-card p-6 rounded-3xl flex flex-col hidden">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-bold text-gray-800">Phân bổ điểm số đề xuất</h3>
-                            </div>
-                            
-                            <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
-                                <div class="h-56 w-56 relative filter drop-shadow-lg">
-                                    <canvas id="chart-canvas"></canvas>
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                        <span id="chart-center-val" class="text-4xl font-black text-gray-800">0</span>
-                                        <span class="text-sm font-medium text-gray-500">Tín chỉ</span>
+                        <div class="lg:col-span-8 flex flex-col gap-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <!-- Result Card -->
+                                <div class="glass-card p-8 rounded-[2.5rem] relative overflow-hidden group">
+                                    <div id="blob-required" class="absolute -right-4 -top-4 h-40 w-40 rounded-full blur-3xl transition-all duration-700 bg-slate-400/20 group-hover:scale-110"></div>
+                                    <div class="relative z-10">
+                                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Điểm TB cần đạt</p>
+                                        <div class="flex items-baseline gap-2">
+                                            <h2 id="goal-required-gpa" class="text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-sm text-slate-300 transition-colors">---</h2>
+                                            <span class="text-sm font-bold text-slate-400">/ 4.0</span>
+                                        </div>
+                                        <div id="goal-possibility-badge" class="mt-6 hidden items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter"></div>
                                     </div>
+                                </div>
+
+                                <!-- Difference Card -->
+                                <div class="glass-card p-8 rounded-[2.5rem] flex flex-col justify-between relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-bl-full pointer-events-none"></div>
+                                    <div>
+                                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Cần tăng thêm</p>
+                                        <div class="flex items-baseline gap-2">
+                                             <h2 id="goal-diff" class="text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-sm text-slate-700">0.00</h2>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="mt-6 w-full bg-slate-200/50 h-4 rounded-full overflow-hidden border border-white/40 backdrop-blur-sm shadow-inner">
+                                            <div id="goal-progress" class="bg-gradient-to-r from-blue-400 to-blue-600 h-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(59,130,246,0.5)] relative" style="width: 0%">
+                                                <div class="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]"></div>
+                                            </div>
+                                        </div>
+                                        <p id="goal-summary-text" class="mt-3 text-xs text-slate-500 font-medium">Nhập thông tin để xem kết quả</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chart Section -->
+                            <div id="goal-chart-container" class="glass-card p-8 rounded-[2.5rem] flex flex-col hidden">
+                                <div class="flex items-center justify-between mb-8">
+                                    <h3 class="text-lg font-bold text-slate-800">Phân bổ điểm số đề xuất</h3>
                                 </div>
                                 
-                                <div id="chart-legend" class="flex flex-col gap-4 w-full max-w-sm"></div>
-                            </div>
-                            
-                            <div class="mt-8 p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-4 shadow-sm backdrop-blur-md">
-                                <div class="bg-blue-100/50 p-2 rounded-lg">
-                                    <i data-lucide="lightbulb" class="h-6 w-6 text-primary shrink-0"></i>
+                                <div class="flex flex-col md:flex-row gap-10 items-center justify-center">
+                                    <div class="h-60 w-60 relative filter drop-shadow-xl">
+                                        <canvas id="chart-canvas"></canvas>
+                                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                            <span id="chart-center-val" class="text-5xl font-black text-slate-800">0</span>
+                                            <span class="text-xs font-bold uppercase text-slate-500 mt-1">Tín chỉ</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="chart-legend" class="flex flex-col gap-3 w-full max-w-sm"></div>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-bold text-gray-900">Lời khuyên chiến lược</p>
-                                    <p id="goal-advice" class="text-sm text-gray-700 mt-1 leading-relaxed"></p>
+                                
+                                <div class="mt-8 p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-transparent border border-blue-500/20 flex items-start gap-4 shadow-inner">
+                                    <div class="bg-blue-100/80 p-2.5 rounded-xl shadow-sm text-blue-600">
+                                        <i data-lucide="lightbulb" class="h-6 w-6 shrink-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-1">Lời khuyên chiến lược</p>
+                                        <p id="goal-advice" class="text-sm text-slate-700 leading-relaxed"></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div id="goal-chart-empty" class="glass-card p-10 rounded-3xl flex flex-col items-center text-center">
-                            <div class="h-20 w-20 bg-white/50 rounded-full flex items-center justify-center mb-5 border border-white/50 shadow-sm backdrop-blur-sm">
-                                <i data-lucide="pie-chart" class="h-10 w-10 text-gray-400"></i>
+                            <div id="goal-chart-empty" class="glass-card p-12 rounded-[2.5rem] flex flex-col items-center text-center">
+                                <div class="h-24 w-24 bg-white/40 rounded-full flex items-center justify-center mb-6 border border-white/60 shadow-xl backdrop-blur-md">
+                                    <i data-lucide="pie-chart" class="h-10 w-10 text-slate-400"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Biểu đồ phân bổ điểm</h3>
+                                <p class="text-slate-500 mt-3 max-w-sm">
+                                    Nhập đầy đủ thông tin về GPA hiện tại và mục tiêu để xem phân tích phân bổ điểm số cần thiết.
+                                </p>
                             </div>
-                            <h3 class="text-lg font-bold text-gray-800">Biểu đồ phân bổ điểm</h3>
-                            <p class="text-gray-500 mt-2 max-w-sm">
-                                Nhập đầy đủ thông tin về GPA hiện tại và mục tiêu để xem phân tích phân bổ điểm số cần thiết.
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -524,70 +582,82 @@
 
         </main>
 
-        <footer class="w-full text-center pb-8 pt-4 z-10 relative">
-             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                Thiết kế bởi gxrtohuuloi.logistics.ctu.edu.vn
-             </p>
+        <footer class="w-full flex justify-center pb-8 pt-4 z-10 relative">
+             <div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/20 border border-white/30 shadow-sm backdrop-blur-md transition-transform hover:scale-105 cursor-default group">
+                 <span class="text-[10px] font-medium text-slate-500/90 group-hover:text-slate-600 transition-colors">Thiết kế bởi</span>
+                 <span class="text-[10px] font-bold text-blue-600/90 tracking-wide group-hover:text-blue-700 transition-colors">gxrtohuuloi.logistics.ctu.edu.vn</span>
+            </div>
         </footer>
 
+        <!-- Modal Overlay -->
         <div id="stats-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300" onclick="closeStatsModal()"></div>
-            
-            <div class="relative w-full max-w-2xl transform overflow-hidden rounded-[2rem] bg-white/90 shadow-2xl transition-all animate-zoomIn border border-white/50 backdrop-blur-xl max-h-[90vh] flex flex-col">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity duration-300" onclick="closeStatsModal()"></div>
+            <!-- Scrollable container for modal -->
+            <div class="relative w-full max-w-3xl transform rounded-[2rem] bg-white/85 shadow-2xl transition-all animate-enter border border-white/60 backdrop-blur-3xl flex flex-col max-h-[90vh] ring-1 ring-white/50 overflow-hidden">
                 
-                <div class="flex items-center justify-between border-b border-gray-100 p-6">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary">
-                            <i data-lucide="pie-chart" class="h-6 w-6"></i>
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-8 py-6 border-b border-slate-200/50">
+                     <div class="flex items-center gap-3">
+                        <div class="p-2 bg-blue-500/10 rounded-xl text-blue-600">
+                            <i data-lucide="bar-chart-2" class="h-6 w-6"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">Thống kê chi tiết</h3>
-                    </div>
-                    <button onclick="closeStatsModal()" class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                        <i data-lucide="x" class="h-6 w-6"></i>
-                    </button>
+                        <h2 class="text-xl font-bold text-slate-800">Chi tiết thống kê</h2>
+                     </div>
+                     <button onclick="closeStatsModal()" class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
+                         <i data-lucide="x" class="h-6 w-6"></i>
+                     </button>
                 </div>
 
-                <div class="overflow-y-auto p-6 no-scrollbar">
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
                     
+                    <!-- Top Section: Grade Distribution -->
                     <div class="mb-8">
-                        <h4 class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Phân bố điểm chữ</h4>
-                        <div class="relative h-64 w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pl-1">Phân bố điểm số</h3>
+                        <div class="h-64 w-full bg-white/40 rounded-2xl p-4 border border-white/50 shadow-sm">
                             <canvas id="grade-distribution-chart"></canvas>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                             <h4 class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Tỉ lệ tích lũy</h4>
-                             <div class="relative h-48 w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100 flex items-center justify-center">
-                                 <canvas id="credits-chart"></canvas>
-                             </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Left: Stats Grid -->
+                        <div class="grid grid-cols-2 gap-4 h-fit">
+                            <div class="bg-white/40 p-5 rounded-2xl border border-white/50 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-white/60 transition-colors">
+                                <span class="text-3xl font-black text-slate-800" id="modal-total-subjects">0</span>
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng môn</span>
+                            </div>
+                            <div class="bg-green-50/50 p-5 rounded-2xl border border-green-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-green-50 transition-colors">
+                                <span class="text-3xl font-black text-green-600" id="modal-a-grades">0</span>
+                                <span class="text-xs font-bold text-green-600/70 uppercase tracking-wider">Điểm A</span>
+                            </div>
+                            <div class="bg-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-blue-50 transition-colors">
+                                <span class="text-3xl font-black text-blue-600" id="modal-accumulated-credits">0</span>
+                                <span class="text-xs font-bold text-blue-600/70 uppercase tracking-wider">TC Tích lũy</span>
+                            </div>
+                            <div class="bg-orange-50/50 p-5 rounded-2xl border border-orange-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-orange-50 transition-colors">
+                                <span class="text-3xl font-black text-orange-500" id="modal-highest-score">0</span>
+                                <span class="text-xs font-bold text-orange-600/70 uppercase tracking-wider">Cao nhất</span>
+                            </div>
                         </div>
-                        
-                        <div class="grid grid-cols-2 gap-3 content-start">
-                             <div class="rounded-xl bg-blue-50/50 p-4 border border-blue-100">
-                                 <span class="block text-xs font-medium text-gray-500">Tổng môn học</span>
-                                 <span id="modal-total-subjects" class="block mt-1 text-2xl font-black text-blue-600">0</span>
-                             </div>
-                             <div class="rounded-xl bg-green-50/50 p-4 border border-green-100">
-                                 <span class="block text-xs font-medium text-gray-500">Môn đạt (A)</span>
-                                 <span id="modal-a-grades" class="block mt-1 text-2xl font-black text-green-600">0</span>
-                             </div>
-                             <div class="rounded-xl bg-purple-50/50 p-4 border border-purple-100">
-                                 <span class="block text-xs font-medium text-gray-500">Tín chỉ tích lũy</span>
-                                 <span id="modal-accumulated-credits" class="block mt-1 text-2xl font-black text-purple-600">0</span>
-                             </div>
-                             <div class="rounded-xl bg-orange-50/50 p-4 border border-orange-100">
-                                 <span class="block text-xs font-medium text-gray-500">Điểm cao nhất</span>
-                                 <span id="modal-highest-score" class="block mt-1 text-2xl font-black text-orange-600">0</span>
+
+                        <!-- Right: Credits Chart -->
+                        <div>
+                             <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pl-1 text-center md:text-left">Tỷ lệ tích lũy</h3>
+                             <div class="h-48 w-full flex items-center justify-center relative">
+                                <canvas id="credits-chart"></canvas>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span class="text-2xl font-black text-slate-700" id="modal-credit-percent">0%</span>
+                                </div>
                              </div>
                         </div>
                     </div>
-
                 </div>
-                
-                <div class="border-t border-gray-100 bg-gray-50/50 p-4 text-center">
-                    <p class="text-xs text-gray-400">Biểu đồ được cập nhật tự động dựa trên dữ liệu nhập vào.</p>
+
+                <!-- Footer -->
+                <div class="p-6 border-t border-slate-200/50 bg-white/30 backdrop-blur-md">
+                    <button onclick="closeStatsModal()" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98]">
+                        Đóng thống kê
+                    </button>
                 </div>
             </div>
         </div>
@@ -610,22 +680,43 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- GLOBAL STATE ---
+        let subjects = JSON.parse(localStorage.getItem('gpa-subjects') || '[]');
+        let simulatedSubjects = [];
+        let isSimulating = false;
+        let newSubjectIsAccumulated = true;
+        let chartInstance = null;
+        let isSaving = false;
+        let saveTimeout = null;
+        let hasUnsavedChanges = false;
+        let unsubscribe = null;
+        let distChart = null;
+        let creditChart = null;
+        
+        // Semesters Config
+        const semesters = [
+            "Năm 1 - HK1", "Năm 1 - HK2", "Năm 1 - Hè",
+            "Năm 2 - HK1", "Năm 2 - HK2", "Năm 2 - Hè",
+            "Năm 3 - HK1", "Năm 3 - HK2", "Năm 3 - Hè",
+            "Năm 4 - HK1", "Năm 4 - HK2", "Năm 4 - Hè"
+        ];
+
         // --- UTILS ---
         function getGradeInfo(score10) {
             score10 = parseFloat(score10);
-            if (score10 >= 9.0) return { score4: 4.0, letter: 'A', colorClass: 'bg-green-500/10 text-green-700 border border-green-500/20 shadow-sm shadow-green-500/5' };
-            if (score10 >= 8.0) return { score4: 3.5, letter: 'B+', colorClass: 'bg-blue-500/10 text-blue-700 border border-blue-500/20 shadow-sm shadow-blue-500/5' };
-            if (score10 >= 7.0) return { score4: 3.0, letter: 'B', colorClass: 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20 shadow-sm shadow-cyan-500/5' };
-            if (score10 >= 6.5) return { score4: 2.5, letter: 'C+', colorClass: 'bg-yellow-500/10 text-yellow-700 border border-yellow-500/20 shadow-sm shadow-yellow-500/5' };
-            if (score10 >= 5.5) return { score4: 2.0, letter: 'C', colorClass: 'bg-orange-500/10 text-orange-700 border border-orange-500/20 shadow-sm shadow-orange-500/5' };
-            if (score10 >= 5.0) return { score4: 1.5, letter: 'D+', colorClass: 'bg-red-500/10 text-red-600 border border-red-500/20 shadow-sm shadow-red-500/5' };
-            if (score10 >= 4.0) return { score4: 1.0, letter: 'D', colorClass: 'bg-red-600/10 text-red-800 border border-red-600/20 shadow-sm shadow-red-600/5' };
-            return { score4: 0.0, letter: 'F', colorClass: 'bg-gray-500/10 text-gray-600 border border-gray-500/20' };
+            if (score10 >= 9.0) return { score4: 4.0, letter: 'A', colorClass: 'bg-green-100/80 text-green-700 ring-1 ring-green-200' };
+            if (score10 >= 8.0) return { score4: 3.5, letter: 'B+', colorClass: 'bg-blue-100/80 text-blue-700 ring-1 ring-blue-200' };
+            if (score10 >= 7.0) return { score4: 3.0, letter: 'B', colorClass: 'bg-cyan-100/80 text-cyan-700 ring-1 ring-cyan-200' };
+            if (score10 >= 6.5) return { score4: 2.5, letter: 'C+', colorClass: 'bg-yellow-100/80 text-yellow-700 ring-1 ring-yellow-200' };
+            if (score10 >= 5.5) return { score4: 2.0, letter: 'C', colorClass: 'bg-orange-100/80 text-orange-700 ring-1 ring-orange-200' };
+            if (score10 >= 5.0) return { score4: 1.5, letter: 'D+', colorClass: 'bg-red-50/80 text-red-600 ring-1 ring-red-200' };
+            if (score10 >= 4.0) return { score4: 1.0, letter: 'D', colorClass: 'bg-red-100/80 text-red-800 ring-1 ring-red-300' };
+            return { score4: 0.0, letter: 'F', colorClass: 'bg-slate-200/80 text-slate-600 ring-1 ring-slate-300' };
         }
 
-        function calculateGPA(subjects) {
-            const accumulatedSubjects = subjects.filter(s => s.isAccumulated);
-            const totalCredits = subjects.reduce((sum, s) => sum + s.credits, 0);
+        function calculateGPA(subs) {
+            const accumulatedSubjects = subs.filter(s => s.isAccumulated);
+            const totalCredits = subs.reduce((sum, s) => sum + s.credits, 0);
             const gpaCredits = accumulatedSubjects.reduce((sum, s) => sum + s.credits, 0);
             
             if (gpaCredits === 0) return { gpa10: 0, gpa4: 0, totalCredits, gpaCredits: 0, classification: 'Chưa xếp loại' };
@@ -649,36 +740,94 @@
         function formatNumber(num) {
             return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
-
         function parseInputNumber(value) {
             if (!value) return 0;
             return parseFloat(value.toString().replace(/,/g, '.')) || 0;
         }
-
         function toTitleCase(str) {
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
 
-        // --- STATE & GLOBAL VARS ---
-        let subjects = JSON.parse(localStorage.getItem('gpa-subjects') || '[]');
-        let newSubjectIsAccumulated = true;
-        let chartInstance = null;
-        let isSaving = false;
-        let saveTimeout = null;
-        let hasUnsavedChanges = false;
-        let unsubscribe = null;
-        
-        let distChart = null;
-        let creditChart = null;
+        // --- SIMULATION MODE LOGIC ---
+        function toggleSimulation() {
+            isSimulating = !isSimulating;
+            const toggle = document.getElementById('sim-toggle');
+            const listCard = document.getElementById('list-card');
+            const simBadge = document.getElementById('sim-badge');
+            const statsBg = document.getElementById('stats-bg');
+            const btnAdd = document.getElementById('btn-add-main');
+            const btnDeleteAll = document.getElementById('btn-delete-all');
+            const simLabel = document.getElementById('sim-label');
+            const simDelta = document.getElementById('sim-delta');
 
-        // --- FIREBASE LOGIC ---
+            if (isSimulating) {
+                // Activate Sim Mode
+                simulatedSubjects = JSON.parse(JSON.stringify(subjects)); // Deep copy
+                document.body.classList.add('sim-mode-active');
+                simBadge.classList.remove('hidden');
+                simLabel.classList.remove('hidden');
+                simDelta.classList.remove('hidden');
+                
+                // Visual cues
+                statsBg.classList.remove('from-blue-600/90', 'via-indigo-600/90', 'to-purple-600/90');
+                statsBg.classList.add('from-purple-600/90', 'via-fuchsia-600/90', 'to-indigo-600/90');
+                
+                // Disable Add/Delete functionality to simplify "What-if" to editing only
+                btnAdd.disabled = true;
+                btnAdd.classList.add('opacity-50', 'cursor-not-allowed');
+                btnDeleteAll.disabled = true;
+                btnDeleteAll.classList.add('opacity-50', 'cursor-not-allowed');
+
+            } else {
+                // Deactivate Sim Mode
+                document.body.classList.remove('sim-mode-active');
+                simBadge.classList.add('hidden');
+                simLabel.classList.add('hidden');
+                simDelta.classList.add('hidden');
+                
+                statsBg.classList.add('from-blue-600/90', 'via-indigo-600/90', 'to-purple-600/90');
+                statsBg.classList.remove('from-purple-600/90', 'via-fuchsia-600/90', 'to-indigo-600/90');
+
+                btnAdd.disabled = false;
+                btnAdd.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnDeleteAll.disabled = false;
+                btnDeleteAll.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            renderSubjectList();
+            updateStats();
+        }
+
+        function updateSimulatedScore(id, newScoreStr) {
+            const newScore = parseInputNumber(newScoreStr);
+            if (newScore < 0 || newScore > 10) return;
+
+            simulatedSubjects = simulatedSubjects.map(s => {
+                if(s.id === id) return {...s, score10: newScore};
+                return s;
+            });
+            updateStats(); // Re-calc stats locally
+            // Actually, let's update the Grade 4/Letter cell next to input immediately
+            const row = document.getElementById(`row-${id}`);
+            if(row) {
+                const grade = getGradeInfo(newScore);
+                const score4Cell = row.querySelector('.score4-cell');
+                const letterCell = row.querySelector('.letter-cell span');
+                if(score4Cell) score4Cell.innerText = formatNumber(grade.score4, 1);
+                if(letterCell) {
+                    letterCell.innerText = grade.letter;
+                    letterCell.className = `inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm ${grade.colorClass}`;
+                }
+            }
+        }
+
+        // --- CORE FUNCTIONS ---
+
         function handleStudentIdChange(val) {
             const upper = val.trim().toUpperCase();
             document.getElementById('student-id').value = upper;
             localStorage.setItem('gpa-student-id', upper);
-
             if (unsubscribe) { unsubscribe(); unsubscribe = null; }
-
             if (upper.length < 3) {
                 updateStatus("Chưa kết nối", "normal");
                 return;
@@ -687,20 +836,25 @@
         }
 
         function setupRealtimeListener(studentId) {
-            const loader = document.getElementById('loading-indicator');
-            if(loader) loader.classList.remove('hidden');
+            // Skeleton ON
+            const skeleton = document.getElementById('loading-skeleton');
+            const content = document.getElementById('main-content');
+            
+            skeleton.classList.remove('hidden');
+            content.classList.add('hidden');
+            
             updateStatus("Đang kết nối...", "loading");
 
             const docRef = doc(db, "students", studentId);
 
             unsubscribe = onSnapshot(docRef, (docSnap) => {
-                if(loader) loader.classList.add('hidden');
-                
+                // Skeleton OFF
+                skeleton.classList.add('hidden');
+                content.classList.remove('hidden');
+
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     subjects = data.subjects || [];
-                    
-                    // SYNC GOAL DATA
                     if (data.goal) {
                         const tGPA = data.goal.targetGPA || '';
                         const tCred = data.goal.targetCredits || '';
@@ -709,9 +863,8 @@
                         localStorage.setItem('gpa-target-gpa', tGPA);
                         localStorage.setItem('gpa-target-credits', tCred);
                     }
-
                     saveSubjectsLocal();
-                    renderSubjectList(false);
+                    if(!isSimulating) renderSubjectList(false);
                     updateStats();
                     const stats = calculateGPA(subjects);
                     document.getElementById('goal-current-gpa').value = formatNumber(stats.gpa4);
@@ -723,14 +876,15 @@
                 } else {
                     if (!isSaving) {
                         subjects = [];
-                        renderSubjectList(false);
+                        if(!isSimulating) renderSubjectList(false);
                         updateStats();
                         updateStatus("Sẵn sàng", "normal");
                     }
                 }
             }, (error) => {
                 console.error("Firestore Error:", error);
-                if(loader) loader.classList.add('hidden');
+                skeleton.classList.add('hidden');
+                content.classList.remove('hidden');
                 updateStatus("Lỗi kết nối", "error");
             });
         }
@@ -738,43 +892,20 @@
         function updateStatus(msg, type = 'normal') {
             const badgeTextEl = document.getElementById('save-status-text');
             const dotEl = document.getElementById('status-dot');
+            let shortText = 'OFFLINE', colorClass = 'text-slate-400', dotClass = 'bg-slate-400';
 
-            let shortText = 'OFFLINE';
-            let colorClass = 'text-gray-400';
-            let dotClass = 'bg-gray-400';
+            if (type === 'success') { shortText = 'ONLINE'; colorClass = 'text-green-600'; dotClass = 'bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]'; }
+            else if (type === 'error') { shortText = 'LỖI'; colorClass = 'text-red-500'; dotClass = 'bg-red-500'; }
+            else if (type === 'saving') { shortText = 'ĐANG LƯU'; colorClass = 'text-blue-500'; dotClass = 'bg-blue-500 status-pulse'; }
+            else if (type === 'loading') { shortText = 'ĐANG TẢI'; colorClass = 'text-blue-500'; dotClass = 'bg-blue-500 animate-bounce'; }
+            else if (type === 'unsaved') { shortText = 'CHƯA LƯU'; colorClass = 'text-orange-500'; dotClass = 'bg-orange-400'; }
 
-            if (type === 'success') {
-                shortText = 'REAL-TIME';
-                colorClass = 'text-green-600';
-                dotClass = 'bg-green-500 animate-pulse';
-            } else if (type === 'error') {
-                shortText = 'LỖI';
-                colorClass = 'text-red-500';
-                dotClass = 'bg-red-500';
-            } else if (type === 'saving') {
-                shortText = 'ĐANG LƯU';
-                colorClass = 'text-blue-500';
-                dotClass = 'bg-blue-500 status-pulse';
-            } else if (type === 'loading') {
-                shortText = 'ĐANG TẢI';
-                colorClass = 'text-blue-500';
-                dotClass = 'bg-blue-500 animate-bounce';
-            } else if (type === 'unsaved') {
-                shortText = 'CHƯA LƯU';
-                colorClass = 'text-orange-500';
-                dotClass = 'bg-orange-400';
-            }
-
-            if(badgeTextEl) {
-                badgeTextEl.innerText = shortText;
-                badgeTextEl.className = `text-[10px] font-bold uppercase tracking-wider ${colorClass}`;
-            }
-            if(dotEl) {
-                dotEl.className = `absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ${dotClass}`;
-            }
+            if(badgeTextEl) { badgeTextEl.innerText = shortText; badgeTextEl.className = `text-[10px] font-bold uppercase tracking-wider ${colorClass}`; }
+            if(dotEl) { dotEl.className = `absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${dotClass}`; }
         }
 
         function triggerAutoSave() {
+            if(isSimulating) return; // Never save in Sim mode
             hasUnsavedChanges = true;
             updateStatus("Đang chờ lưu...", "unsaved");
             if (saveTimeout) clearTimeout(saveTimeout);
@@ -784,39 +915,35 @@
         async function performAutoSave() {
             let studentId = document.getElementById('student-id').value.trim().toUpperCase();
             if(!studentId) return;
-
             isSaving = true;
             updateStatus("Đang đồng bộ...", "saving");
-
             const targetGPA = document.getElementById('goal-target-gpa').value;
             const targetCredits = document.getElementById('goal-target-credits').value;
 
             try {
                 await setDoc(doc(db, "students", studentId), {
                     subjects: subjects,
-                    goal: {
-                        targetGPA: targetGPA,
-                        targetCredits: targetCredits
-                    },
+                    goal: { targetGPA, targetCredits },
                     lastUpdated: new Date().toISOString()
                 });
                 hasUnsavedChanges = false;
             } catch (e) {
                 console.error("Save error:", e);
                 updateStatus("Lỗi lưu trữ", "error");
-            } finally {
-                isSaving = false;
-            }
+            } finally { isSaving = false; }
         }
 
-        // --- INIT ---
-        const tabCalc = document.getElementById('tab-content-calculator');
-        const tabGoal = document.getElementById('tab-content-goal');
-        const navCalc = document.getElementById('nav-calculator');
-        const navGoal = document.getElementById('nav-goal');
-        const inputNameEl = document.getElementById('input-name');
-        
+        // --- TAB & UI LOGIC ---
         window.addEventListener('DOMContentLoaded', () => {
+            // Populate Semester Dropdown
+            const semSelect = document.getElementById('input-semester');
+            semesters.forEach(sem => {
+                const opt = document.createElement('option');
+                opt.value = sem;
+                opt.text = sem;
+                semSelect.appendChild(opt);
+            });
+
             renderSubjectList(false);
             updateStats();
             initGoalPlanner();
@@ -827,54 +954,44 @@
                 document.getElementById('student-id').value = savedId;
                 if(savedId.length > 2) setupRealtimeListener(savedId);
             }
-
-            document.getElementById('student-id').addEventListener('input', (e) => {
-                localStorage.setItem('gpa-student-id', e.target.value);
-            });
-
-            window.addEventListener('beforeunload', function (e) {
-                if (hasUnsavedChanges || isSaving) {
-                    e.preventDefault();
-                    e.returnValue = 'Dữ liệu chưa được lưu.';
-                    return e.returnValue;
-                }
-            });
-
-            inputNameEl.addEventListener('input', function(e) {
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                const originalVal = this.value;
-                const newVal = toTitleCase(originalVal);
-                if (originalVal !== newVal) {
-                    this.value = newVal;
-                    this.setSelectionRange(start, end);
+            
+            document.getElementById('input-name').addEventListener('input', function(e) {
+                if (this.value !== toTitleCase(this.value)) {
+                    const start = this.selectionStart; const end = this.selectionEnd;
+                    this.value = toTitleCase(this.value); this.setSelectionRange(start, end);
                 }
             });
         });
 
         function switchTab(tab) {
-            const isCalc = tab === 'calculator';
-            if (isCalc) {
+            const tabCalc = document.getElementById('tab-content-calculator');
+            const tabGoal = document.getElementById('tab-content-goal');
+            const navCalc = document.getElementById('nav-calculator');
+            const navGoal = document.getElementById('nav-goal');
+            
+            if (tab === 'calculator') {
                 if (tabCalc.classList.contains('hidden')) {
                     tabGoal.classList.add('hidden');
                     tabCalc.classList.remove('hidden');
+                    tabCalc.classList.remove('animate-fade-up', 'animate-slide-right');
+                    tabCalc.classList.add('animate-slide-left');
                 }
+                navCalc.className = "relative z-10 rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-sm text-blue-600 ring-1 ring-black/5";
+                navGoal.className = "relative z-10 rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/30";
             } else {
                 if (tabGoal.classList.contains('hidden')) {
                     tabCalc.classList.add('hidden');
                     tabGoal.classList.remove('hidden');
+                    tabGoal.classList.remove('animate-fade-up', 'animate-slide-left');
+                    tabGoal.classList.add('animate-slide-right');
+                    
+                    const stats = calculateGPA(subjects);
+                    document.getElementById('goal-current-gpa').value = formatNumber(stats.gpa4);
+                    document.getElementById('goal-accumulated-credits').value = stats.gpaCredits; 
+                    calculateGoal(); 
                 }
-                const stats = calculateGPA(subjects);
-                document.getElementById('goal-current-gpa').value = formatNumber(stats.gpa4);
-                document.getElementById('goal-accumulated-credits').value = stats.gpaCredits; 
-                calculateGoal(); 
-            }
-            if (isCalc) {
-                navCalc.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary";
-                navGoal.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40";
-            } else {
-                navCalc.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 hover:bg-white/40";
-                navGoal.className = "relative z-10 rounded-full px-4 sm:px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary";
+                navCalc.className = "relative z-10 rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/30";
+                navGoal.className = "relative z-10 rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-sm text-blue-600 ring-1 ring-black/5";
             }
         }
 
@@ -882,94 +999,76 @@
             newSubjectIsAccumulated = !newSubjectIsAccumulated;
             const btn = document.getElementById('btn-accumulate');
             if (newSubjectIsAccumulated) {
-                btn.className = "flex items-center gap-2 h-12 px-4 rounded-xl transition-all duration-300 border active:scale-95 bg-blue-50 border-blue-200 text-primary shadow-sm";
+                btn.className = "glass-button-secondary flex items-center gap-2 h-14 px-5 rounded-2xl active:scale-95 bg-blue-50/50 border-blue-200 text-blue-600 shadow-inner";
                 btn.innerHTML = '<i data-lucide="check-circle-2" class="h-5 w-5"></i><span class="text-sm font-bold whitespace-nowrap">Tích lũy</span>';
             } else {
-                btn.className = "flex items-center gap-2 h-12 px-4 rounded-xl transition-all duration-300 border active:scale-95 bg-white/50 border-white/60 text-gray-400";
+                btn.className = "glass-button-secondary flex items-center gap-2 h-14 px-5 rounded-2xl active:scale-95 opacity-70";
                 btn.innerHTML = '<i data-lucide="circle" class="h-5 w-5"></i><span class="text-sm font-bold whitespace-nowrap">Tích lũy</span>';
             }
             lucide.createIcons();
         }
 
         function addSubject() {
-            const name = inputNameEl.value.trim();
-            const creditsVal = document.getElementById('input-credits').value;
-            const credits = parseInt(creditsVal);
-            const scoreStr = document.getElementById('input-score').value;
-            const score10 = parseInputNumber(scoreStr);
+            if(isSimulating) return alert("Vui lòng tắt chế độ Dự tính để thêm môn học.");
 
-            if (!name || scoreStr === '') return;
-            
-            if (isNaN(credits) || credits <= 0) {
-                alert("Số tín chỉ phải là số nguyên dương lớn hơn 0");
-                return;
-            }
-            if (score10 < 0 || score10 > 10) {
-                alert("Điểm phải nằm trong khoảng từ 0 đến 10");
-                return;
-            }
+            const name = document.getElementById('input-name').value.trim();
+            const semester = document.getElementById('input-semester').value;
+            const credits = parseInt(document.getElementById('input-credits').value);
+            const score10 = parseInputNumber(document.getElementById('input-score').value);
+
+            if (!name || isNaN(score10)) return;
+            if (isNaN(credits) || credits <= 0) return alert("Số tín chỉ không hợp lệ");
+            if (score10 < 0 || score10 > 10) return alert("Điểm phải từ 0-10");
 
             const normalizedName = name.toLowerCase();
             const existingIndex = subjects.findIndex(s => s.name.toLowerCase() === normalizedName);
-
             if (existingIndex !== -1) {
-                if (confirm(`Môn học "${toTitleCase(name)}" đã tồn tại.\nBạn có muốn thay thế không?`)) {
-                    subjects.splice(existingIndex, 1);
-                } else {
-                    return;
-                }
+                if (confirm(`Môn "${toTitleCase(name)}" đã tồn tại. Thay thế?`)) subjects.splice(existingIndex, 1);
+                else return;
             }
 
-            const subject = {
+            subjects.push({
                 id: Date.now().toString(),
                 name: toTitleCase(name),
-                credits: credits,
-                score10: score10,
-                isAccumulated: newSubjectIsAccumulated
-            };
+                semester: semester || "Chưa phân loại",
+                credits, score10, isAccumulated: newSubjectIsAccumulated
+            });
 
-            subjects.push(subject);
             saveSubjectsLocal();
             renderSubjectList(true);
             updateStats();
             triggerAutoSave();
             
-            inputNameEl.value = '';
+            document.getElementById('input-name').value = '';
             document.getElementById('input-score').value = '';
             document.getElementById('input-credits').value = '';
-            inputNameEl.focus();
+            document.getElementById('input-name').focus();
         }
 
         function deleteSubject(id) {
-            const row = document.getElementById(`row-${id}`);
-            if (row) {
-                row.classList.add('row-exit');
-                row.addEventListener('animationend', () => {
-                    subjects = subjects.filter(s => s.id !== id);
-                    saveSubjectsLocal();
-                    renderSubjectList(false);
-                    updateStats();
-                    triggerAutoSave();
-                }, { once: true });
-            } else {
-                subjects = subjects.filter(s => s.id !== id);
-                saveSubjectsLocal();
-                renderSubjectList(false);
-                updateStats();
-                triggerAutoSave();
-            }
-        }
-
-        function toggleSubjectAccumulate(id) {
-            subjects = subjects.map(s => s.id === id ? { ...s, isAccumulated: !s.isAccumulated } : s);
+            if(isSimulating) return;
+            subjects = subjects.filter(s => s.id !== id);
             saveSubjectsLocal();
             renderSubjectList(false);
             updateStats();
             triggerAutoSave();
         }
 
+        function toggleSubjectAccumulate(id) {
+            if(isSimulating) {
+                simulatedSubjects = simulatedSubjects.map(s => s.id === id ? { ...s, isAccumulated: !s.isAccumulated } : s);
+            } else {
+                subjects = subjects.map(s => s.id === id ? { ...s, isAccumulated: !s.isAccumulated } : s);
+                saveSubjectsLocal();
+                triggerAutoSave();
+            }
+            renderSubjectList(false);
+            updateStats();
+        }
+
         function deleteAllSubjects() {
-            if (confirm("Bạn có chắc chắn muốn xóa tất cả môn học?")) {
+            if(isSimulating) return;
+            if (confirm("Xóa tất cả?")) {
                 subjects = [];
                 saveSubjectsLocal();
                 renderSubjectList(false);
@@ -978,79 +1077,263 @@
             }
         }
 
-        function toggleScale() {
-            const scaleDiv = document.getElementById('scale-table');
-            const icon = document.getElementById('icon-scale-toggle');
-            if (scaleDiv.classList.contains('hidden')) {
-                scaleDiv.classList.remove('hidden');
-                scaleDiv.classList.add('scale-enter'); 
-                icon.classList.add('rotate-180');
-            } else {
-                scaleDiv.classList.add('hidden');
-                scaleDiv.classList.remove('scale-enter');
-                icon.classList.remove('rotate-180');
-            }
-        }
-
-        function saveSubjectsLocal() {
-            localStorage.setItem('gpa-subjects', JSON.stringify(subjects));
-        }
+        function saveSubjectsLocal() { localStorage.setItem('gpa-subjects', JSON.stringify(subjects)); }
 
         function renderSubjectList(animateLast = false) {
             const tbody = document.getElementById('subject-list');
-            if (subjects.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="py-12 text-center text-gray-500 italic">Chưa có môn học nào. Hãy thêm môn học đầu tiên!</td></tr>`;
+            const dataToRender = isSimulating ? simulatedSubjects : subjects;
+            
+            if (dataToRender.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="py-12 text-center text-slate-500 italic font-medium">Chưa có môn học nào.</td></tr>`;
                 return;
             }
 
-            let html = '';
-            subjects.forEach((subject, index) => {
-                const grade = getGradeInfo(subject.score10);
-                const opacityClass = subject.isAccumulated ? '' : 'opacity-60 bg-gray-50/30';
-                const accIcon = subject.isAccumulated 
-                    ? `<i data-lucide="check-circle-2" class="h-5 w-5 text-success drop-shadow-sm"></i>` 
-                    : `<i data-lucide="circle" class="h-5 w-5"></i>`;
-                
-                const isLastItem = index === subjects.length - 1;
-                const animationClass = (animateLast && isLastItem) ? 'row-enter' : '';
+            // Group by Semester
+            const grouped = dataToRender.reduce((acc, sub) => {
+                const sem = sub.semester || "Chưa phân loại";
+                if(!acc[sem]) acc[sem] = [];
+                acc[sem].push(sub);
+                return acc;
+            }, {});
 
-                html += `
-                <tr id="row-${subject.id}" class="group transition-colors hover:bg-white/40 ${opacityClass} ${animationClass}">
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-sm text-gray-800 font-medium opacity-70 hidden sm:table-cell">${index + 1}</td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-sm font-semibold text-gray-800 whitespace-nowrap md:whitespace-normal max-w-[150px] md:max-w-none truncate md:text-clip" title="${subject.name}">${subject.name}</td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-center text-sm text-gray-700">${subject.credits}</td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-center">
-                        <button onclick="toggleSubjectAccumulate('${subject.id}')" class="text-gray-400 hover:text-primary transition-colors p-1">
-                            ${accIcon}
-                        </button>
-                    </td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-center text-sm font-bold text-gray-800">${subject.score10}</td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-center text-sm font-black text-primary drop-shadow-sm">${formatNumber(grade.score4, 1)}</td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-center">
-                        <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold backdrop-blur-sm ${grade.colorClass}">
-                            ${grade.letter}
-                        </span>
-                    </td>
-                    <td class="px-3 py-3 md:px-6 md:py-4 text-right">
-                        <button onclick="deleteSubject('${subject.id}')" class="rounded-lg p-2 text-gray-400 transition-all hover:bg-red-500/10 hover:text-danger hover:shadow-sm">
-                            <i data-lucide="trash-2" class="h-4 w-4"></i>
-                        </button>
-                    </td>
-                </tr>
-                `;
+            // Sort semesters order based on config array index
+            const sortedKeys = Object.keys(grouped).sort((a, b) => {
+                const idxA = semesters.indexOf(a);
+                const idxB = semesters.indexOf(b);
+                // If not in list, put at bottom
+                if(idxA === -1) return 1;
+                if(idxB === -1) return -1;
+                return idxA - idxB;
             });
+
+            let html = '';
+            let globalIndex = 0;
+
+            sortedKeys.forEach(sem => {
+                const groupSubs = grouped[sem];
+                const groupStats = calculateGPA(groupSubs);
+                
+                // Semester Header
+                html += `
+                    <tr class="bg-white/20 backdrop-blur-sm border-b border-white/20 shadow-sm">
+                        <td colspan="8" class="px-6 py-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black uppercase tracking-widest text-blue-600 drop-shadow-sm">${sem}</span>
+                                <span class="text-xs font-medium text-slate-600 bg-white/40 px-3 py-1 rounded-full border border-white/40">GPA HK: <b class="text-blue-700">${formatNumber(groupStats.gpa4)}</b> (${groupStats.totalCredits} TC)</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
+                groupSubs.forEach((subject) => {
+                    globalIndex++;
+                    const grade = getGradeInfo(subject.score10);
+                    const opacityClass = subject.isAccumulated ? '' : 'opacity-40 grayscale';
+                    const accIcon = subject.isAccumulated 
+                        ? `<i data-lucide="check-circle-2" class="h-5 w-5 ${isSimulating ? 'text-purple-500' : 'text-green-500'} drop-shadow-sm"></i>` 
+                        : `<i data-lucide="circle" class="h-5 w-5"></i>`;
+                    
+                    // Input vs Text for Score column
+                    const scoreCellContent = isSimulating 
+                        ? `<input type="number" value="${subject.score10}" min="0" max="10" step="0.1" 
+                             class="sim-input" 
+                             oninput="updateSimulatedScore('${subject.id}', this.value)">`
+                        : `<span class="font-bold text-slate-700">${subject.score10}</span>`;
+
+                    const deleteBtn = isSimulating 
+                        ? `` // No delete in Sim mode
+                        : `<button onclick="deleteSubject('${subject.id}')" class="rounded-lg p-2 text-slate-400 transition-all hover:bg-red-100 hover:text-red-500 hover:shadow-sm hover:scale-105"><i data-lucide="trash-2" class="h-4 w-4"></i></button>`;
+
+                    html += `
+                    <tr id="row-${subject.id}" class="group transition-all hover:bg-white/40 ${opacityClass} border-b border-transparent hover:border-white/40 table-row-anim">
+                        <td class="px-4 py-4 text-sm text-slate-500 font-bold opacity-60 hidden sm:table-cell pl-6">${globalIndex}</td>
+                        <td class="px-4 py-4 text-sm font-semibold text-slate-800 whitespace-nowrap md:whitespace-normal max-w-[150px] md:max-w-none truncate md:text-clip" title="${subject.name}">${subject.name}</td>
+                        <td class="px-4 py-4 text-center text-sm text-slate-600 font-medium">${subject.credits}</td>
+                        <td class="px-4 py-4 text-center">
+                            <button onclick="toggleSubjectAccumulate('${subject.id}')" class="text-slate-400 hover:text-blue-500 transition-colors p-1 transform active:scale-90 hover:bg-white/50 rounded-full">
+                                ${accIcon}
+                            </button>
+                        </td>
+                        <td class="px-4 py-4 text-center text-sm">${scoreCellContent}</td>
+                        <td class="px-4 py-4 text-center text-sm font-black ${isSimulating ? 'text-purple-600' : 'text-blue-600'} drop-shadow-sm score4-cell">${formatNumber(grade.score4, 1)}</td>
+                        <td class="px-4 py-4 text-center letter-cell">
+                            <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm ${grade.colorClass}">
+                                ${grade.letter}
+                            </span>
+                        </td>
+                        <td class="px-4 py-4 text-right pr-6">${deleteBtn}</td>
+                    </tr>
+                    `;
+                });
+            });
+
             tbody.innerHTML = html;
             lucide.createIcons();
         }
 
         function updateStats() {
-            const stats = calculateGPA(subjects);
-            document.getElementById('stat-gpa4').innerText = formatNumber(stats.gpa4);
-            document.getElementById('stat-gpa10').innerText = formatNumber(stats.gpa10);
-            document.getElementById('stat-credits').innerText = stats.totalCredits;
-            document.getElementById('stat-classification').innerText = stats.classification;
+            const realStats = calculateGPA(subjects);
+            const currentStats = calculateGPA(isSimulating ? simulatedSubjects : subjects);
+            
+            document.getElementById('stat-gpa4').innerText = formatNumber(currentStats.gpa4);
+            document.getElementById('stat-gpa10').innerText = formatNumber(currentStats.gpa10);
+            document.getElementById('stat-credits').innerText = currentStats.totalCredits;
+            document.getElementById('stat-classification').innerText = currentStats.classification;
+
+            // Handle Sim Delta
+            if(isSimulating) {
+                const diff = currentStats.gpa4 - realStats.gpa4;
+                const sign = diff > 0 ? '+' : '';
+                const diffEl = document.getElementById('diff-val');
+                const realGpaEl = document.getElementById('real-gpa-val');
+                
+                realGpaEl.innerText = formatNumber(realStats.gpa4);
+                diffEl.innerText = `${sign}${formatNumber(diff)}`;
+                diffEl.className = `text-sm font-black drop-shadow-sm leading-none mt-0.5 ${diff >= 0 ? 'text-green-300' : 'text-red-300'}`;
+            }
         }
 
+        // --- MISSING FUNCTIONS RESTORED ---
+        
+        function toggleScale() {
+            const scaleDiv = document.getElementById('scale-table');
+            const icon = document.getElementById('icon-scale-toggle');
+            if (scaleDiv.classList.contains('hidden')) {
+                scaleDiv.classList.remove('hidden');
+                scaleDiv.classList.add('animate-enter'); 
+                icon.classList.add('rotate-180');
+            } else {
+                scaleDiv.classList.add('hidden');
+                scaleDiv.classList.remove('animate-enter');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        function openStatsModal() {
+            document.getElementById('stats-modal').classList.remove('hidden');
+            document.getElementById('stats-modal').classList.add('flex');
+            renderDetailCharts();
+        }
+
+        function closeStatsModal() {
+            document.getElementById('stats-modal').classList.add('hidden');
+            document.getElementById('stats-modal').classList.remove('flex');
+        }
+
+        function renderDetailCharts() {
+            const grades = { 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, 'D+': 0, 'D': 0, 'F': 0 };
+            let aGrades = 0;
+            let accCredits = 0;
+            let highestScore = 0;
+
+            const data = isSimulating ? simulatedSubjects : subjects;
+
+            data.forEach(s => {
+                const info = getGradeInfo(s.score10);
+                if (grades[info.letter] !== undefined) grades[info.letter]++;
+                if (info.letter === 'A') aGrades++;
+                if (s.isAccumulated) accCredits += s.credits;
+                if (s.score10 > highestScore) highestScore = s.score10;
+            });
+
+            const totalCredits = data.reduce((sum, s) => sum + s.credits, 0);
+            const nonAccCredits = totalCredits - accCredits;
+            const percentAcc = totalCredits > 0 ? Math.round((accCredits / totalCredits) * 100) : 0;
+
+            document.getElementById('modal-total-subjects').innerText = data.length;
+            document.getElementById('modal-a-grades').innerText = aGrades;
+            document.getElementById('modal-accumulated-credits').innerText = accCredits;
+            document.getElementById('modal-highest-score').innerText = highestScore;
+            document.getElementById('modal-credit-percent').innerText = percentAcc + "%";
+
+            // Chart Config - Improved Look
+            Chart.defaults.font.family = "'Lexend', sans-serif";
+            Chart.defaults.color = '#64748b';
+
+            const ctxDist = document.getElementById('grade-distribution-chart').getContext('2d');
+            if (distChart) distChart.destroy();
+            
+            // Gradient for bars
+            const gradientA = ctxDist.createLinearGradient(0, 0, 0, 300);
+            gradientA.addColorStop(0, 'rgba(74, 222, 128, 0.8)');
+            gradientA.addColorStop(1, 'rgba(74, 222, 128, 0.2)');
+
+            const gradientRest = ctxDist.createLinearGradient(0, 0, 0, 300);
+            gradientRest.addColorStop(0, 'rgba(96, 165, 250, 0.8)');
+            gradientRest.addColorStop(1, 'rgba(96, 165, 250, 0.2)');
+
+            distChart = new Chart(ctxDist, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(grades),
+                    datasets: [{
+                        label: 'Số lượng môn',
+                        data: Object.values(grades),
+                        backgroundColor: (ctx) => {
+                            if (ctx.dataIndex === 0) return gradientA;
+                            return gradientRest;
+                        },
+                        borderRadius: 8,
+                        borderSkipped: false,
+                        maxBarThickness: 40,
+                        hoverBackgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#1e293b',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: false,
+                            titleFont: { size: 13, weight: 'bold' },
+                            bodyFont: { size: 13 }
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: '#f1f5f9', drawBorder: false },
+                            ticks: { precision: 0 }
+                        }, 
+                        x: { 
+                            grid: { display: false, drawBorder: false } 
+                        } 
+                    }
+                }
+            });
+
+            const ctxCredit = document.getElementById('credits-chart').getContext('2d');
+            if (creditChart) creditChart.destroy();
+            creditChart = new Chart(ctxCredit, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tích lũy', 'Không tích lũy'],
+                    datasets: [{
+                        data: [accCredits, nonAccCredits],
+                        backgroundColor: ['#3b82f6', '#f1f5f9'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '85%',
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
+        
         // --- GOAL PLANNER ---
         function initGoalPlanner() {
             const savedGpa = localStorage.getItem('gpa-target-gpa') || '';
@@ -1088,31 +1371,32 @@
             reqEl.innerText = targetCredits > 0 ? formatNumber(requiredGPA) : '---';
             
             if (targetCredits > 0) {
-                 reqEl.className = `text-5xl font-black tracking-tight drop-shadow-sm ${isPossible ? 'text-green-600' : 'text-red-600'}`;
-                 blobEl.className = `absolute -right-2 -top-2 h-32 w-32 rounded-full blur-2xl transition-all duration-700 ${isPossible ? 'bg-green-500/20 group-hover:bg-green-500/30' : 'bg-red-500/20 group-hover:bg-red-500/30'}`;
+                 reqEl.className = `text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-sm transition-colors ${isPossible ? 'text-green-600' : 'text-red-500'}`;
+                 // Smooth color transition for blob
+                 blobEl.className = `absolute -right-4 -top-4 h-40 w-40 rounded-full blur-3xl transition-all duration-700 group-hover:scale-110 ${isPossible ? 'bg-green-400/30' : 'bg-red-400/30'}`;
                  
                  badgeEl.classList.remove('hidden');
                  badgeEl.classList.add('flex');
                  if (isPossible) {
-                     badgeEl.className = "mt-4 flex items-center gap-2 text-green-700 text-sm font-bold bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-lg w-fit backdrop-blur-md";
+                     badgeEl.className = "mt-6 flex items-center gap-2 text-green-700 text-sm font-bold bg-green-500/10 border border-green-500/20 px-4 py-2 rounded-xl w-fit backdrop-blur-md shadow-sm";
                      badgeEl.innerHTML = `<i data-lucide="check-circle" class="h-4 w-4"></i> Khả thi`;
                  } else {
-                     badgeEl.className = "mt-4 flex items-center gap-2 text-red-700 text-sm font-bold bg-red-500/10 border border-red-500/20 px-3 py-1.5 rounded-lg w-fit backdrop-blur-md";
-                     badgeEl.innerHTML = `<i data-lucide="flag" class="h-4 w-4"></i> Không khả thi`;
+                     badgeEl.className = "mt-6 flex items-center gap-2 text-red-700 text-sm font-bold bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-xl w-fit backdrop-blur-md shadow-sm";
+                     badgeEl.innerHTML = `<i data-lucide="alert-triangle" class="h-4 w-4"></i> Không khả thi`;
                  }
             } else {
-                 reqEl.className = `text-5xl font-black tracking-tight drop-shadow-sm text-gray-600`;
-                 blobEl.className = "absolute -right-2 -top-2 h-32 w-32 rounded-full blur-2xl transition-all duration-700 bg-gray-500/20";
+                 reqEl.className = `text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-sm text-slate-300`;
+                 blobEl.className = "absolute -right-4 -top-4 h-40 w-40 rounded-full blur-3xl transition-all duration-700 bg-slate-400/20";
                  badgeEl.classList.add('hidden');
                  badgeEl.classList.remove('flex');
             }
 
             const diffEl = document.getElementById('goal-diff');
             diffEl.innerText = (gpaDiff > 0 ? '+' : '') + formatNumber(gpaDiff);
-            diffEl.className = `text-5xl font-black tracking-tight drop-shadow-sm ${gpaDiff > 0 ? 'text-primary' : 'text-gray-700'}`;
+            diffEl.className = `text-5xl sm:text-6xl font-black tracking-tighter drop-shadow-sm ${gpaDiff > 0 ? 'text-blue-600' : 'text-slate-700'}`;
             
             document.getElementById('goal-progress').style.width = `${progressPercent}%`;
-            document.getElementById('goal-summary-text').innerHTML = `Từ <span class="text-gray-900 font-bold">${formatNumber(currentGPA)}</span> lên <span class="text-gray-900 font-bold">${formatNumber(targetGPA)}</span> với ${targetCredits} tín chỉ mục tiêu`;
+            document.getElementById('goal-summary-text').innerHTML = `Từ <span class="text-slate-900 font-bold">${formatNumber(currentGPA)}</span> lên <span class="text-slate-900 font-bold">${formatNumber(targetGPA)}</span> với ${targetCredits} tín chỉ mục tiêu`;
 
             renderGoalChart(targetCredits, requiredGPA, isPossible);
             lucide.createIcons();
@@ -1137,23 +1421,23 @@
                 pieData = [targetCredits];
                 colors = ['#ef4444'];
                 labels = ['Không khả thi'];
-                advice = `GPA cần đạt ${formatNumber(requiredGPA)} > 4.0. Hãy điều chỉnh mục tiêu.`;
+                advice = `GPA cần đạt ${formatNumber(requiredGPA)} > 4.0. Hãy điều chỉnh mục tiêu (giảm GPA mong muốn hoặc tăng số tín chỉ để cải thiện).`;
             } else {
                 if (requiredGPA >= 3.8) {
                     pieData = [targetCredits * 0.9, targetCredits * 0.1];
-                    colors = ['#137fec', '#60a5fa'];
+                    colors = ['#2563eb', '#60a5fa'];
                     labels = ['Điểm A', 'Điểm B+'];
-                    advice = `Cần nỗ lực rất cao, chủ yếu là điểm A.`;
+                    advice = `Cần nỗ lực rất cao, chủ yếu là điểm A để đạt mục tiêu này.`;
                 } else if (requiredGPA >= 3.2) {
                     pieData = [targetCredits * 0.5, targetCredits * 0.3, targetCredits * 0.2];
-                    colors = ['#137fec', '#60a5fa', '#cbd5e1'];
+                    colors = ['#2563eb', '#60a5fa', '#cbd5e1'];
                     labels = ['A', 'B+', 'B'];
-                    advice = `Cần duy trì sức học Khá - Giỏi.`;
+                    advice = `Cần duy trì sức học Khá - Giỏi, hạn chế điểm C.`;
                 } else {
                     pieData = [targetCredits * 0.4, targetCredits * 0.6];
                     colors = ['#60a5fa', '#cbd5e1'];
                     labels = ['B+', 'B'];
-                    advice = `Mục tiêu trong tầm tay.`;
+                    advice = `Mục tiêu trong tầm tay, chỉ cần duy trì phong độ hiện tại.`;
                 }
             }
 
@@ -1164,13 +1448,13 @@
             let legendHtml = '';
             pieData.forEach((val, i) => {
                 legendHtml += `
-                <div class="flex items-center justify-between p-3 rounded-xl bg-white/40 border border-white/40 backdrop-blur-sm transition-colors">
+                <div class="flex items-center justify-between p-4 rounded-xl bg-white/30 border border-white/40 shadow-sm transition-colors hover:bg-white/50">
                     <div class="flex items-center gap-3">
-                        <div class="h-4 w-4 rounded-full shadow-sm" style="background-color: ${colors[i]}"></div>
-                        <div><p class="text-sm font-bold text-gray-800">${labels[i]}</p></div>
+                        <div class="h-3 w-3 rounded-full shadow-sm ring-2 ring-white" style="background-color: ${colors[i]}"></div>
+                        <div><p class="text-sm font-bold text-slate-700">${labels[i]}</p></div>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm font-bold text-gray-900">${Math.round(val)} tín chỉ</p>
+                        <p class="text-sm font-black text-slate-900">${Math.round(val)} TC</p>
                     </div>
                 </div>`;
             });
@@ -1187,97 +1471,24 @@
                         data: pieData,
                         backgroundColor: colors,
                         borderWidth: 0,
-                        hoverOffset: 4
+                        hoverOffset: 10,
+                        offset: 5
                     }]
                 },
                 options: {
-                    cutout: '75%',
+                    cutout: '80%',
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
                 }
             });
         }
         
-        // --- STATS MODAL ---
-        function openStatsModal() {
-            document.getElementById('stats-modal').classList.remove('hidden');
-            document.getElementById('stats-modal').classList.add('flex');
-            renderDetailCharts();
-        }
-
-        function closeStatsModal() {
-            document.getElementById('stats-modal').classList.add('hidden');
-            document.getElementById('stats-modal').classList.remove('flex');
-        }
-        
-        function renderDetailCharts() {
-            const grades = { 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, 'D+': 0, 'D': 0, 'F': 0 };
-            let totalSubjects = subjects.length;
-            let aGrades = 0;
-            let accCredits = 0;
-            let highestScore = 0;
-
-            subjects.forEach(s => {
-                const info = getGradeInfo(s.score10);
-                if (grades[info.letter] !== undefined) grades[info.letter]++;
-                if (info.letter === 'A') aGrades++;
-                if (s.isAccumulated) accCredits += s.credits;
-                if (s.score10 > highestScore) highestScore = s.score10;
-            });
-
-            document.getElementById('modal-total-subjects').innerText = totalSubjects;
-            document.getElementById('modal-a-grades').innerText = aGrades;
-            document.getElementById('modal-accumulated-credits').innerText = accCredits;
-            document.getElementById('modal-highest-score').innerText = highestScore;
-
-            const ctxDist = document.getElementById('grade-distribution-chart').getContext('2d');
-            if (distChart) distChart.destroy();
-            distChart = new Chart(ctxDist, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(grades),
-                    datasets: [{
-                        label: 'Số lượng môn',
-                        data: Object.values(grades),
-                        backgroundColor: ['#22c55e', '#3b82f6', '#06b6d4', '#eab308', '#f97316', '#ef4444', '#b91c1c', '#64748b'],
-                        borderRadius: 8,
-                        maxBarThickness: 40
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
-                }
-            });
-
-            const ctxCredit = document.getElementById('credits-chart').getContext('2d');
-            const totalCredits = subjects.reduce((sum, s) => sum + s.credits, 0);
-            const nonAccCredits = totalCredits - accCredits;
-
-            if (creditChart) creditChart.destroy();
-            creditChart = new Chart(ctxCredit, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Tích lũy', 'Không tích lũy'],
-                    datasets: [{
-                        data: [accCredits, nonAccCredits],
-                        backgroundColor: ['#137fec', '#cbd5e1'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8 } } }
-                }
-            });
-        }
-
+        // Expose functions globally
         window.switchTab = switchTab;
         window.toggleNewAccumulate = toggleNewAccumulate;
         window.addSubject = addSubject;
@@ -1288,6 +1499,9 @@
         window.handleStudentIdChange = handleStudentIdChange;
         window.openStatsModal = openStatsModal;
         window.closeStatsModal = closeStatsModal;
+        window.toggleSimulation = toggleSimulation;
+        window.updateSimulatedScore = updateSimulatedScore;
+        window.calculateGoal = calculateGoal;
     </script>
 </body>
 </html>
