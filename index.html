@@ -5,20 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>GPA Master</title>
     
-    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23137fec' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10v6M2 10l10-5 10 5-10 5z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5'/%3E%3C/svg%3E">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         theme: {
@@ -55,7 +51,6 @@
       }
     </script>
 
-    <!-- Custom CSS -->
     <style>
       body {
         font-family: 'Lexend', sans-serif;
@@ -65,13 +60,11 @@
       }
 
       /* HIDE SPIN BUTTONS FOR NUMBER INPUTS */
-      /* Chrome, Safari, Edge, Opera */
       input[type=number]::-webkit-outer-spin-button,
       input[type=number]::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }
-      /* Firefox */
       input[type=number] {
         -moz-appearance: textfield;
       }
@@ -146,20 +139,13 @@
       }
 
       /* --- Animations --- */
-      
-      /* Tab Transitions */
-      .tab-content {
-        animation: fadeEnter 0.4s ease-out forwards;
-      }
-      .tab-content.hidden {
-        display: none;
-      }
+      .tab-content { animation: fadeEnter 0.4s ease-out forwards; }
+      .tab-content.hidden { display: none; }
       @keyframes fadeEnter {
         from { opacity: 0; transform: translateY(10px) scale(0.98); }
         to { opacity: 1; transform: translateY(0) scale(1); }
       }
 
-      /* List Item Animations */
       @keyframes slideInRow {
         from { opacity: 0; transform: translateX(-20px); }
         to { opacity: 1; transform: translateX(0); }
@@ -171,39 +157,48 @@
       .row-enter { animation: slideInRow 0.3s ease-out forwards; }
       .row-exit { animation: slideOutRow 0.3s ease-in forwards; pointer-events: none; }
 
-      /* Scale Table Animation */
       .scale-enter { animation: expandHeight 0.3s ease-out forwards; }
       @keyframes expandHeight {
         from { opacity: 0; max-height: 0; transform: translateY(-10px); }
         to { opacity: 1; max-height: 500px; transform: translateY(0); }
       }
 
-      /* Status pulse */
       .status-pulse { animation: pulseStatus 2s infinite; }
       @keyframes pulseStatus {
         0% { opacity: 0.6; }
-        50% { opacity: 1; }
+        50% { opacity: 1; } 
         100% { opacity: 0.6; }
       }
 
-      /* Custom Scrollbar for Modal */
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
+      /* ABSOLUTE SCROLLBAR REMOVAL */
+      .no-scrollbar {
+          -ms-overflow-style: none !important;  /* IE and Edge */
+          scrollbar-width: none !important;  /* Firefox */
       }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.05);
-        border-radius: 4px;
+      
+      .no-scrollbar::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+          background: transparent !important;
+          -webkit-appearance: none !important;
       }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: rgba(19, 127, 236, 0.5);
-        border-radius: 4px;
+      
+      /* Explicitly hide buttons, track, thumb, and corner */
+      .no-scrollbar::-webkit-scrollbar-button,
+      .no-scrollbar::-webkit-scrollbar-track,
+      .no-scrollbar::-webkit-scrollbar-track-piece,
+      .no-scrollbar::-webkit-scrollbar-thumb,
+      .no-scrollbar::-webkit-scrollbar-corner,
+      .no-scrollbar::-webkit-resizer {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
       }
-
     </style>
 </head>
 <body>
 
-    <!-- Background -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
         <div class="liquid-blob w-[500px] h-[500px] bg-blue-400/30 rounded-full top-[-10%] left-[-10%] mix-blend-multiply"></div>
         <div class="liquid-blob w-[400px] h-[400px] bg-purple-400/30 rounded-full top-[40%] right-[-5%] mix-blend-multiply animation-delay-2000"></div>
@@ -211,10 +206,8 @@
         <div class="liquid-blob w-[300px] h-[300px] bg-green-300/30 rounded-full top-[10%] right-[30%] mix-blend-multiply animation-delay-1000"></div>
     </div>
 
-    <!-- App Container -->
     <div class="relative min-h-screen flex flex-col font-sans text-gray-900 overflow-hidden">
         
-        <!-- Navbar -->
         <header class="sticky top-0 z-50 glass-panel border-b-0 border-b border-white/30 shadow-sm transition-all">
             <div class="flex items-center justify-between px-6 py-3 lg:px-20 relative z-50">
                 <div class="flex items-center gap-3 shrink-0">
@@ -224,8 +217,7 @@
                     <h2 class="hidden sm:block text-gray-900 text-xl font-bold leading-tight tracking-tight drop-shadow-sm">GPA Master</h2>
                 </div>
 
-                <!-- Unified Pill Tabs (Visible on All Screens) -->
-                <div class="flex bg-white/40 rounded-full p-1 border border-white/40 backdrop-blur-md shadow-inner relative mx-auto sm:mx-0">
+                <div class="absolute left-1/2 -translate-x-1/2 flex bg-white/40 rounded-full p-1 border border-white/40 backdrop-blur-md shadow-inner z-0">
                     <button onclick="switchTab('calculator')" id="nav-calculator" class="relative z-10 rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 bg-white shadow-md text-primary">
                         Tính điểm
                     </button>
@@ -234,71 +226,39 @@
                     </button>
                 </div>
 
-                <!-- Spacer to balance logo -->
-                <div class="hidden sm:block w-9"></div>
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="hidden md:flex flex-col items-end">
+                        <span id="save-status-text" class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">OFFLINE</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 bg-white/50 rounded-xl px-3 py-2 border border-white/50 shadow-sm backdrop-blur-md transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 group/input">
+                        <div class="relative">
+                            <i data-lucide="user-circle-2" class="w-5 h-5 text-primary/70"></i>
+                            <div id="status-dot" class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-gray-400 border border-white"></div>
+                        </div>
+                        <input 
+                            id="student-id" 
+                            type="text" 
+                            placeholder="MSSV" 
+                            onchange="handleStudentIdChange(this.value)" 
+                            onkeydown="if(event.key === 'Enter') this.blur()"
+                            class="bg-transparent border-none p-0 text-sm font-black text-gray-800 placeholder-gray-400 w-20 sm:w-24 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left"
+                        >
+                        <div id="loading-indicator" class="hidden">
+                             <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-primary"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="flex-grow w-full max-w-[1200px] mx-auto px-4 py-6 lg:px-8 lg:py-10 z-10 relative">
             
-            <!-- CALCULATOR TAB -->
             <div id="tab-content-calculator" class="tab-content">
                 <div class="grid grid-cols-1 gap-6 lg:gap-8 lg:grid-cols-12 items-start">
                     
-                    <!-- Left Column (Input & List) -->
                     <div class="flex flex-col gap-6 lg:col-span-8 order-1 lg:order-1">
 
-                        <!-- ONLINE STORAGE CARD (Student Card Style) -->
-                        <div class="glass-card rounded-[2rem] p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:border-blue-500/30 group">
-                            <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
-                                
-                                <!-- Icon/Avatar Section -->
-                                <div class="shrink-0 relative">
-                                    <div class="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-white/60 shadow-sm flex items-center justify-center text-primary backdrop-blur-md">
-                                         <i data-lucide="user-circle-2" class="w-9 h-9 opacity-80 group-hover:scale-110 transition-transform duration-300"></i>
-                                    </div>
-                                    <!-- Status Dot on Avatar -->
-                                    <div class="absolute -bottom-1 -right-1 bg-white p-0.5 rounded-full">
-                                        <div id="status-dot-avatar" class="w-4 h-4 bg-gray-300 rounded-full border-2 border-white transition-colors duration-500"></div>
-                                    </div>
-                                </div>
-
-                                <!-- Input Section -->
-                                <div class="flex-1 w-full text-center sm:text-left relative flex flex-col justify-center">
-                                    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-1 gap-2 sm:gap-0">
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest pl-1">
-                                            Mã số sinh viên (ID)
-                                        </label>
-                                        
-                                        <!-- Connection Status Badge -->
-                                        <div id="connection-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 border border-white/50 shadow-sm transition-all duration-300">
-                                            <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-400"></div>
-                                            <span id="save-status-text" class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Chưa kết nối</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="relative group/input">
-                                        <input 
-                                            id="student-id" 
-                                            type="text" 
-                                            placeholder="B23..." 
-                                            onchange="handleStudentIdChange(this.value)" 
-                                            onkeydown="if(event.key === 'Enter') this.blur()"
-                                            class="w-full bg-transparent border-none p-0 text-3xl font-black text-gray-800 placeholder-gray-300 focus:ring-0 focus:outline-none uppercase tracking-tight transition-colors text-center sm:text-left"
-                                        >
-                                        <div id="loading-indicator" class="hidden absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow-sm">
-                                            <i data-lucide="loader-2" class="w-5 h-5 animate-spin text-primary"></i>
-                                        </div>
-                                    </div>
-                                    <p id="cloud-status-text" class="text-[10px] text-gray-400 font-medium pl-1 mt-1 transition-colors">
-                                        Nhập ID để đồng bộ dữ liệu Real-time
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Input Card -->
                         <div class="glass-card rounded-3xl p-5 lg:p-6">
                             <h3 class="mb-4 flex items-center gap-2 text-lg font-bold text-gray-800">
                                 <div class="bg-primary/20 p-2 rounded-lg text-primary">
@@ -307,9 +267,7 @@
                                 Nhập thông tin môn học
                             </h3>
                             
-                            <!-- Redesigned Form Layout to fix overlaps -->
                             <div class="flex flex-col gap-4">
-                                <!-- Row 1: Name -->
                                 <div class="flex flex-col gap-1.5">
                                     <label class="text-sm font-medium text-gray-700 ml-1">Tên môn học</label>
                                     <input 
@@ -321,11 +279,9 @@
                                     >
                                 </div>
                                 
-                                <!-- Row 2: Credits & Score -->
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="flex flex-col gap-1.5">
                                         <label class="text-sm font-medium text-gray-700 ml-1">Số tín chỉ</label>
-                                        <!-- UPDATED: No default value, text-center for better UX on mobile? kept normal for now -->
                                         <input 
                                             id="input-credits" 
                                             type="number" 
@@ -341,7 +297,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Row 3: Accumulate & Button (Separate Row) -->
                                 <div class="flex items-center gap-3 pt-1">
                                     <button id="btn-accumulate" onclick="toggleNewAccumulate()" class="flex items-center gap-2 h-12 px-4 rounded-xl transition-all duration-300 border active:scale-95 bg-blue-50 border-blue-200 text-primary shadow-sm" title="Tích lũy vào GPA?">
                                         <i data-lucide="check-circle-2" class="h-5 w-5"></i>
@@ -356,7 +311,6 @@
                             </div>
                         </div>
 
-                        <!-- List Card -->
                         <div class="flex flex-col overflow-hidden glass-card rounded-3xl order-3 lg:order-2">
                             <div class="flex items-center justify-between border-b border-white/30 bg-white/30 px-4 py-3 md:px-6 md:py-4 backdrop-blur-sm">
                                 <h3 class="text-lg font-bold text-gray-800">Danh sách môn</h3>
@@ -379,15 +333,12 @@
                                             <th class="px-3 py-3 md:px-6 md:py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">Xóa</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="subject-list" class="divide-y divide-white/30">
-                                        <!-- Rows generated by JS -->
-                                    </tbody>
+                                    <tbody id="subject-list" class="divide-y divide-white/30"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right Column: Stats -->
                     <div class="flex flex-col gap-6 lg:col-span-4 order-2 lg:order-2 lg:sticky lg:top-24">
                         <div class="group/stats relative overflow-hidden rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20 border border-white/20 transition-transform active:scale-[0.99]"
                              style="background: linear-gradient(135deg, rgba(19, 127, 236, 0.9), rgba(59, 130, 246, 0.8)); backdrop-filter: blur(20px);">
@@ -431,7 +382,6 @@
                              </div>
                         </div>
 
-                        <!-- Reference Table -->
                         <div class="glass-card rounded-3xl p-5 order-last">
                             <button onclick="toggleScale()" class="flex w-full items-center justify-between text-base font-bold text-gray-800 hover:text-primary transition-colors py-1">
                                 <span>Thang điểm tham khảo</span>
@@ -465,10 +415,8 @@
                 </div>
             </div>
 
-            <!-- GOAL PLANNER TAB -->
             <div id="tab-content-goal" class="tab-content hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <!-- Input Panel -->
                     <div class="lg:col-span-4 flex flex-col gap-6 glass-card p-6 rounded-3xl h-fit">
                         <h3 class="text-lg font-bold text-gray-800 border-b border-white/40 pb-3">Thông số đầu vào</h3>
                         <div class="flex flex-col gap-5">
@@ -510,10 +458,8 @@
                         </div>
                     </div>
 
-                    <!-- Results -->
                     <div class="lg:col-span-8 flex flex-col gap-6">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <!-- Required GPA Card -->
                             <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
                                 <div id="blob-required" class="absolute -right-2 -top-2 h-32 w-32 rounded-full blur-2xl transition-all duration-700 bg-green-500/20 group-hover:bg-green-500/30"></div>
                                 <div>
@@ -523,12 +469,9 @@
                                         <span class="text-sm font-bold text-gray-400">/ 4.0</span>
                                     </div>
                                 </div>
-                                <div id="goal-possibility-badge" class="mt-4 hidden items-center gap-2 text-sm font-bold px-3 py-1.5 rounded-lg w-fit backdrop-blur-md">
-                                    <!-- Populated by JS -->
-                                </div>
+                                <div id="goal-possibility-badge" class="mt-4 hidden items-center gap-2 text-sm font-bold px-3 py-1.5 rounded-lg w-fit backdrop-blur-md"></div>
                             </div>
 
-                            <!-- Diff Card -->
                             <div class="glass-card p-6 rounded-3xl flex flex-col justify-between relative overflow-hidden">
                                 <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
                                 <div>
@@ -544,7 +487,6 @@
                             </div>
                         </div>
 
-                        <!-- Chart Section -->
                         <div id="goal-chart-container" class="glass-card p-6 rounded-3xl flex flex-col hidden">
                             <div class="flex items-center justify-between mb-6">
                                 <h3 class="text-lg font-bold text-gray-800">Phân bổ điểm số đề xuất</h3>
@@ -559,9 +501,7 @@
                                     </div>
                                 </div>
                                 
-                                <div id="chart-legend" class="flex flex-col gap-4 w-full max-w-sm">
-                                    <!-- Legend items -->
-                                </div>
+                                <div id="chart-legend" class="flex flex-col gap-4 w-full max-w-sm"></div>
                             </div>
                             
                             <div class="mt-8 p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-4 shadow-sm backdrop-blur-md">
@@ -575,7 +515,6 @@
                             </div>
                         </div>
 
-                        <!-- Empty State for Chart -->
                         <div id="goal-chart-empty" class="glass-card p-10 rounded-3xl flex flex-col items-center text-center">
                             <div class="h-20 w-20 bg-white/50 rounded-full flex items-center justify-center mb-5 border border-white/50 shadow-sm backdrop-blur-sm">
                                 <i data-lucide="pie-chart" class="h-10 w-10 text-gray-400"></i>
@@ -591,30 +530,11 @@
 
         </main>
 
-        <!-- Footer -->
-        <footer class="mt-auto glass-panel border-t-0 border-t border-white/20 py-8 z-10">
-            <div class="max-w-[1200px] mx-auto px-6 lg:px-20 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-2 text-gray-900 justify-center md:justify-start">
-                    <div class="h-6 w-6 text-primary drop-shadow-sm">
-                         <i data-lucide="graduation-cap" class="h-full w-full"></i>
-                    </div>
-                    <span class="font-bold text-sm tracking-wide">GPA Master</span>
-                </div>
-                <p class="text-sm text-gray-600 text-center md:text-right font-medium">
-                    Designed by grxtohuuloi.logistics.ctu.edu.vn
-                </p>
-            </div>
-        </footer>
-
-        <!-- MODAL: STATS & CHARTS -->
         <div id="stats-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-            <!-- Backdrop -->
             <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300" onclick="closeStatsModal()"></div>
             
-            <!-- Modal Content -->
             <div class="relative w-full max-w-2xl transform overflow-hidden rounded-[2rem] bg-white/90 shadow-2xl transition-all animate-zoomIn border border-white/50 backdrop-blur-xl max-h-[90vh] flex flex-col">
                 
-                <!-- Header -->
                 <div class="flex items-center justify-between border-b border-gray-100 p-6">
                     <div class="flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary">
@@ -627,10 +547,8 @@
                     </button>
                 </div>
 
-                <!-- Scrollable Body -->
-                <div class="overflow-y-auto p-6 custom-scrollbar">
+                <div class="overflow-y-auto p-6 no-scrollbar">
                     
-                    <!-- Grade Distribution Chart -->
                     <div class="mb-8">
                         <h4 class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Phân bố điểm chữ</h4>
                         <div class="relative h-64 w-full rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
@@ -638,7 +556,6 @@
                         </div>
                     </div>
 
-                    <!-- Credits Breakdown -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                              <h4 class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Tỉ lệ tích lũy</h4>
@@ -647,7 +564,6 @@
                              </div>
                         </div>
                         
-                        <!-- Mini Stats Grid -->
                         <div class="grid grid-cols-2 gap-3 content-start">
                              <div class="rounded-xl bg-blue-50/50 p-4 border border-blue-100">
                                  <span class="block text-xs font-medium text-gray-500">Tổng môn học</span>
@@ -670,7 +586,6 @@
 
                 </div>
                 
-                <!-- Footer -->
                 <div class="border-t border-gray-100 bg-gray-50/50 p-4 text-center">
                     <p class="text-xs text-gray-400">Biểu đồ được cập nhật tự động dựa trên dữ liệu nhập vào.</p>
                 </div>
@@ -679,7 +594,6 @@
 
     </div>
 
-    <!-- MAIN LOGIC WITH FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -693,11 +607,10 @@
           appId: "1:894421141098:web:7ff5e977e273998f95ac13"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- 1. UTILS ---
+        // --- UTILS ---
         function getGradeInfo(score10) {
             score10 = parseFloat(score10);
             if (score10 >= 9.0) return { score4: 4.0, letter: 'A', colorClass: 'bg-green-500/10 text-green-700 border border-green-500/20 shadow-sm shadow-green-500/5' };
@@ -746,7 +659,7 @@
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
 
-        // --- 2. STATE & GLOBAL VARS ---
+        // --- STATE & GLOBAL VARS ---
         let subjects = JSON.parse(localStorage.getItem('gpa-subjects') || '[]');
         let newSubjectIsAccumulated = true;
         let chartInstance = null;
@@ -755,49 +668,39 @@
         let hasUnsavedChanges = false;
         let unsubscribe = null;
         
-        // Modal Chart Instances
         let distChart = null;
         let creditChart = null;
 
-        // --- 3. CLOUD FUNCTIONS (FIREBASE) ---
-
+        // --- FIREBASE LOGIC ---
         function handleStudentIdChange(val) {
             const upper = val.trim().toUpperCase();
             document.getElementById('student-id').value = upper;
-            
-            // Save ID local
             localStorage.setItem('gpa-student-id', upper);
 
-            // Unsubscribe previous listener
-            if (unsubscribe) {
-                unsubscribe();
-                unsubscribe = null;
-            }
+            if (unsubscribe) { unsubscribe(); unsubscribe = null; }
 
             if (upper.length < 3) {
                 updateStatus("Chưa kết nối", "normal");
                 return;
             }
-
             setupRealtimeListener(upper);
         }
 
         function setupRealtimeListener(studentId) {
             const loader = document.getElementById('loading-indicator');
-            loader.classList.remove('hidden');
+            if(loader) loader.classList.remove('hidden');
             updateStatus("Đang kết nối...", "loading");
 
             const docRef = doc(db, "students", studentId);
 
             unsubscribe = onSnapshot(docRef, (docSnap) => {
-                loader.classList.add('hidden');
+                if(loader) loader.classList.add('hidden');
                 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     subjects = data.subjects || [];
                     
-                    // Update UI
-                    saveSubjectsLocal(); // Sync to local storage as backup
+                    saveSubjectsLocal();
                     renderSubjectList(false);
                     updateStats();
                     const stats = calculateGPA(subjects);
@@ -808,74 +711,65 @@
                     updateStatus("Đã đồng bộ", "success");
                     hasUnsavedChanges = false;
                 } else {
-                    // Document does not exist (New Student)
                     if (!isSaving) {
-                        // Only clear if we are not currently saving (to avoid flicker on first save)
                         subjects = [];
                         renderSubjectList(false);
                         updateStats();
-                        updateStatus("Sẵn sàng nhập điểm", "normal");
+                        updateStatus("Sẵn sàng", "normal");
                     }
                 }
             }, (error) => {
                 console.error("Firestore Error:", error);
-                loader.classList.add('hidden');
+                if(loader) loader.classList.add('hidden');
                 updateStatus("Lỗi kết nối", "error");
             });
         }
         
+        // UPDATED updateStatus to match new Header
         function updateStatus(msg, type = 'normal') {
-            const statusEl = document.getElementById('cloud-status-text');
             const badgeTextEl = document.getElementById('save-status-text');
             const dotEl = document.getElementById('status-dot');
-            const avatarDotEl = document.getElementById('status-dot-avatar');
 
-            statusEl.innerText = msg;
-            
+            let shortText = 'OFFLINE';
+            let colorClass = 'text-gray-400';
+            let dotClass = 'bg-gray-400';
+
             if (type === 'success') {
-                badgeTextEl.innerText = 'Real-time';
-                badgeTextEl.className = 'text-[10px] font-bold text-green-600 uppercase tracking-wider';
-                dotEl.className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
-                avatarDotEl.className = 'w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm';
+                shortText = 'REAL-TIME';
+                colorClass = 'text-green-600';
+                dotClass = 'bg-green-500 animate-pulse';
             } else if (type === 'error') {
-                badgeTextEl.innerText = 'Lỗi';
-                badgeTextEl.className = 'text-[10px] font-bold text-red-500 uppercase tracking-wider';
-                dotEl.className = 'w-2 h-2 rounded-full bg-red-500';
-                avatarDotEl.className = 'w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-sm';
+                shortText = 'LỖI';
+                colorClass = 'text-red-500';
+                dotClass = 'bg-red-500';
             } else if (type === 'saving') {
-                badgeTextEl.innerText = 'Đang lưu...';
-                badgeTextEl.className = 'text-[10px] font-bold text-blue-500 uppercase tracking-wider';
-                dotEl.className = 'w-2 h-2 rounded-full bg-blue-500 status-pulse';
-                avatarDotEl.className = 'w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-sm status-pulse';
+                shortText = 'ĐANG LƯU';
+                colorClass = 'text-blue-500';
+                dotClass = 'bg-blue-500 status-pulse';
             } else if (type === 'loading') {
-                badgeTextEl.innerText = 'Đang tải...';
-                badgeTextEl.className = 'text-[10px] font-bold text-blue-500 uppercase tracking-wider';
-                dotEl.className = 'w-2 h-2 rounded-full bg-blue-500 animate-bounce';
-                avatarDotEl.className = 'w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-sm';
+                shortText = 'ĐANG TẢI';
+                colorClass = 'text-blue-500';
+                dotClass = 'bg-blue-500 animate-bounce';
             } else if (type === 'unsaved') {
-                badgeTextEl.innerText = 'Chưa lưu';
-                badgeTextEl.className = 'text-[10px] font-bold text-orange-500 uppercase tracking-wider';
-                dotEl.className = 'w-2 h-2 rounded-full bg-orange-400';
-                avatarDotEl.className = 'w-4 h-4 bg-orange-400 rounded-full border-2 border-white shadow-sm';
-            } else {
-                badgeTextEl.innerText = 'Chưa kết nối';
-                badgeTextEl.className = 'text-[10px] font-bold text-gray-500 uppercase tracking-wider';
-                dotEl.className = 'w-2 h-2 rounded-full bg-gray-400';
-                avatarDotEl.className = 'w-4 h-4 bg-gray-300 rounded-full border-2 border-white';
+                shortText = 'CHƯA LƯU';
+                colorClass = 'text-orange-500';
+                dotClass = 'bg-orange-400';
+            }
+
+            if(badgeTextEl) {
+                badgeTextEl.innerText = shortText;
+                badgeTextEl.className = `text-[10px] font-bold uppercase tracking-wider ${colorClass}`;
+            }
+            if(dotEl) {
+                dotEl.className = `absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ${dotClass}`;
             }
         }
 
-        // TRIGGER AUTO SAVE
         function triggerAutoSave() {
             hasUnsavedChanges = true;
             updateStatus("Đang chờ lưu...", "unsaved");
-            
             if (saveTimeout) clearTimeout(saveTimeout);
-            
-            // Debounce: Wait 2 seconds after last change before saving
-            saveTimeout = setTimeout(() => {
-                performAutoSave();
-            }, 2000);
+            saveTimeout = setTimeout(() => { performAutoSave(); }, 2000);
         }
 
         async function performAutoSave() {
@@ -886,15 +780,13 @@
             updateStatus("Đang đồng bộ...", "saving");
 
             try {
-                // Save to Firestore
                 await setDoc(doc(db, "students", studentId), {
                     subjects: subjects,
                     lastUpdated: new Date().toISOString()
                 });
-
-                // Status will likely be updated by onSnapshot, but we set it here for immediate feedback
                 hasUnsavedChanges = false;
-                updateStatus(`Đã lưu ${new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'})}`, "success");
+                // Success status will come from Snapshot listener usually, but we set it here too
+                // We let the listener confirm it to be true "Real-time"
             } catch (e) {
                 console.error("Save error:", e);
                 updateStatus("Lỗi lưu trữ", "error");
@@ -903,7 +795,7 @@
             }
         }
 
-        // --- 5. DOM ELEMENTS & INIT ---
+        // --- INIT ---
         const tabCalc = document.getElementById('tab-content-calculator');
         const tabGoal = document.getElementById('tab-content-goal');
         const navCalc = document.getElementById('nav-calculator');
@@ -916,7 +808,6 @@
             initGoalPlanner();
             lucide.createIcons();
             
-            // Restore Student ID if available
             const savedId = localStorage.getItem('gpa-student-id');
             if(savedId) {
                 document.getElementById('student-id').value = savedId;
@@ -927,16 +818,14 @@
                 localStorage.setItem('gpa-student-id', e.target.value);
             });
 
-            // Prevent closing if unsaved
             window.addEventListener('beforeunload', function (e) {
                 if (hasUnsavedChanges || isSaving) {
                     e.preventDefault();
-                    e.returnValue = 'Dữ liệu chưa được lưu. Bạn có chắc chắn muốn rời đi?';
+                    e.returnValue = 'Dữ liệu chưa được lưu.';
                     return e.returnValue;
                 }
             });
 
-            // Input Title Case logic
             inputNameEl.addEventListener('input', function(e) {
                 const start = this.selectionStart;
                 const end = this.selectionEnd;
@@ -949,7 +838,6 @@
             });
         });
 
-        // --- 7. TABS LOGIC ---
         function switchTab(tab) {
             const isCalc = tab === 'calculator';
             if (isCalc) {
@@ -976,7 +864,6 @@
             }
         }
 
-        // --- 8. CALCULATOR LOGIC ---
         function toggleNewAccumulate() {
             newSubjectIsAccumulated = !newSubjectIsAccumulated;
             const btn = document.getElementById('btn-accumulate');
@@ -1003,19 +890,16 @@
                 alert("Số tín chỉ phải là số nguyên dương lớn hơn 0");
                 return;
             }
-
             if (score10 < 0 || score10 > 10) {
                 alert("Điểm phải nằm trong khoảng từ 0 đến 10");
                 return;
             }
 
-            // --- CHECK FOR DUPLICATES ---
             const normalizedName = name.toLowerCase();
             const existingIndex = subjects.findIndex(s => s.name.toLowerCase() === normalizedName);
 
             if (existingIndex !== -1) {
-                const confirmUpdate = confirm(`Môn học "${toTitleCase(name)}" đã tồn tại trong danh sách.\nBạn có muốn thay thế bằng kết quả mới nhập không?`);
-                if (confirmUpdate) {
+                if (confirm(`Môn học "${toTitleCase(name)}" đã tồn tại.\nBạn có muốn thay thế không?`)) {
                     subjects.splice(existingIndex, 1);
                 } else {
                     return;
@@ -1034,10 +918,8 @@
             saveSubjectsLocal();
             renderSubjectList(true);
             updateStats();
-            
             triggerAutoSave();
             
-            // Reset focus to name for rapid entry
             inputNameEl.value = '';
             document.getElementById('input-score').value = '';
             document.getElementById('input-credits').value = '';
@@ -1155,18 +1037,16 @@
             document.getElementById('stat-classification').innerText = stats.classification;
         }
 
-        // --- 9. GOAL PLANNER LOGIC ---
+        // --- GOAL PLANNER ---
         function initGoalPlanner() {
             const savedGpa = localStorage.getItem('gpa-target-gpa') || '';
             const savedCredits = localStorage.getItem('gpa-target-credits') || '';
             document.getElementById('goal-target-gpa').value = savedGpa;
             document.getElementById('goal-target-credits').value = savedCredits;
 
-            const inputs = ['goal-target-gpa', 'goal-target-credits'];
-            inputs.forEach(id => {
+            ['goal-target-gpa', 'goal-target-credits'].forEach(id => {
                 document.getElementById(id).addEventListener('input', () => {
-                    if(id === 'goal-target-gpa') localStorage.setItem('gpa-target-gpa', document.getElementById(id).value);
-                    if(id === 'goal-target-credits') localStorage.setItem('gpa-target-credits', document.getElementById(id).value);
+                    localStorage.setItem(id === 'goal-target-gpa' ? 'gpa-target-gpa' : 'gpa-target-credits', document.getElementById(id).value);
                     calculateGoal();
                 });
             });
@@ -1236,32 +1116,29 @@
             chartContainer.classList.remove('hidden');
             emptyContainer.classList.add('hidden');
 
-            let pieData = [];
-            let colors = [];
-            let labels = [];
-            let advice = "";
+            let pieData = [], colors = [], labels = [], advice = "";
 
             if (!isPossible) {
                 pieData = [targetCredits];
                 colors = ['#ef4444'];
                 labels = ['Không khả thi'];
-                advice = `Bạn cần đạt GPA ${formatNumber(requiredGPA)} cho các tín chỉ mục tiêu. Điều này vượt quá thang điểm 4.0. Hãy điều chỉnh mục tiêu thấp hơn hoặc đăng ký học cải thiện.`;
+                advice = `GPA cần đạt ${formatNumber(requiredGPA)} > 4.0. Hãy điều chỉnh mục tiêu.`;
             } else {
                 if (requiredGPA >= 3.8) {
                     pieData = [targetCredits * 0.9, targetCredits * 0.1];
                     colors = ['#137fec', '#60a5fa'];
-                    labels = ['Điểm A (4.0)', 'Điểm B+ (3.5)'];
-                    advice = `Để đạt mục tiêu, bạn cần nỗ lực rất cao. Hầu hết các môn phải đạt điểm A.`;
+                    labels = ['Điểm A', 'Điểm B+'];
+                    advice = `Cần nỗ lực rất cao, chủ yếu là điểm A.`;
                 } else if (requiredGPA >= 3.2) {
                     pieData = [targetCredits * 0.5, targetCredits * 0.3, targetCredits * 0.2];
                     colors = ['#137fec', '#60a5fa', '#cbd5e1'];
-                    labels = ['Điểm A (4.0)', 'Điểm B+ (3.5)', 'Điểm B (3.0)'];
-                    advice = `Bạn cần duy trì sức học Khá - Giỏi. Cố gắng đạt nhiều điểm A và B+.`;
+                    labels = ['A', 'B+', 'B'];
+                    advice = `Cần duy trì sức học Khá - Giỏi.`;
                 } else {
                     pieData = [targetCredits * 0.4, targetCredits * 0.6];
                     colors = ['#60a5fa', '#cbd5e1'];
-                    labels = ['Điểm B+ (3.5)', 'Điểm B (3.0)'];
-                    advice = `Mục tiêu trong tầm tay. Duy trì phong độ hiện tại và tránh bị điểm dưới B.`;
+                    labels = ['B+', 'B'];
+                    advice = `Mục tiêu trong tầm tay.`;
                 }
             }
 
@@ -1275,23 +1152,17 @@
                 <div class="flex items-center justify-between p-3 rounded-xl bg-white/40 border border-white/40 backdrop-blur-sm transition-colors">
                     <div class="flex items-center gap-3">
                         <div class="h-4 w-4 rounded-full shadow-sm" style="background-color: ${colors[i]}"></div>
-                        <div>
-                            <p class="text-sm font-bold text-gray-800">${labels[i]}</p>
-                        </div>
+                        <div><p class="text-sm font-bold text-gray-800">${labels[i]}</p></div>
                     </div>
                     <div class="text-right">
                         <p class="text-sm font-bold text-gray-900">${Math.round(val)} tín chỉ</p>
-                        <p class="text-xs text-gray-500">~${Math.ceil(val / 3)} môn</p>
                     </div>
                 </div>`;
             });
             legendDiv.innerHTML = legendHtml;
 
             const ctx = document.getElementById('chart-canvas').getContext('2d');
-            
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            if (chartInstance) chartInstance.destroy();
 
             chartInstance = new Chart(ctx, {
                 type: 'doughnut',
@@ -1306,17 +1177,14 @@
                 },
                 options: {
                     cutout: '75%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     responsive: true,
                     maintainAspectRatio: false
                 }
             });
         }
         
-        // --- 10. STATS MODAL LOGIC ---
+        // --- STATS MODAL ---
         function openStatsModal() {
             document.getElementById('stats-modal').classList.remove('hidden');
             document.getElementById('stats-modal').classList.add('flex');
@@ -1329,7 +1197,6 @@
         }
         
         function renderDetailCharts() {
-            // Data Prep
             const grades = { 'A': 0, 'B+': 0, 'B': 0, 'C+': 0, 'C': 0, 'D+': 0, 'D': 0, 'F': 0 };
             let totalSubjects = subjects.length;
             let aGrades = 0;
@@ -1344,16 +1211,13 @@
                 if (s.score10 > highestScore) highestScore = s.score10;
             });
 
-            // Update Mini Stats
             document.getElementById('modal-total-subjects').innerText = totalSubjects;
             document.getElementById('modal-a-grades').innerText = aGrades;
             document.getElementById('modal-accumulated-credits').innerText = accCredits;
             document.getElementById('modal-highest-score').innerText = highestScore;
 
-            // Chart 1: Distribution
             const ctxDist = document.getElementById('grade-distribution-chart').getContext('2d');
             if (distChart) distChart.destroy();
-            
             distChart = new Chart(ctxDist, {
                 type: 'bar',
                 data: {
@@ -1361,40 +1225,24 @@
                     datasets: [{
                         label: 'Số lượng môn',
                         data: Object.values(grades),
-                        backgroundColor: [
-                            '#22c55e', '#3b82f6', '#06b6d4', '#eab308', 
-                            '#f97316', '#ef4444', '#b91c1c', '#64748b'
-                        ],
+                        backgroundColor: ['#22c55e', '#3b82f6', '#06b6d4', '#eab308', '#f97316', '#ef4444', '#b91c1c', '#64748b'],
                         borderRadius: 8,
-                        barThickness: 'flex',
                         maxBarThickness: 40
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { display: false }
-                        },
-                        x: {
-                            grid: { display: false }
-                        }
-                    }
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
                 }
             });
 
-            // Chart 2: Credits
             const ctxCredit = document.getElementById('credits-chart').getContext('2d');
             const totalCredits = subjects.reduce((sum, s) => sum + s.credits, 0);
             const nonAccCredits = totalCredits - accCredits;
 
             if (creditChart) creditChart.destroy();
-
             creditChart = new Chart(ctxCredit, {
                 type: 'doughnut',
                 data: {
@@ -1410,17 +1258,11 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '70%',
-                    plugins: {
-                        legend: { 
-                            position: 'right',
-                            labels: { usePointStyle: true, boxWidth: 8 }
-                        }
-                    }
+                    plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8 } } }
                 }
             });
         }
 
-        // --- EXPOSE TO GLOBAL SCOPE FOR HTML ATTRIBUTES ---
         window.switchTab = switchTab;
         window.toggleNewAccumulate = toggleNewAccumulate;
         window.addSubject = addSubject;
