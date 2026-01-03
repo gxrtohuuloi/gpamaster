@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>GPA Master - Liquid Glass</title>
+    <title>GPA Master</title>
     
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 10v6M2 10l10-5 10 5-10 5z'/%3E%3Cpath d='M6 12v5c3 3 9 3 12 0v-5'/%3E%3C/svg%3E">
 
@@ -301,10 +301,10 @@
                                         <div class="flex flex-col gap-2">
                                             <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Học kỳ</label>
                                             <div class="relative group">
-                                                <select id="input-semester" class="glass-input h-14 w-full rounded-2xl px-5 text-base font-semibold appearance-none cursor-pointer hover:bg-white/40 transition-colors">
+                                                <select id="input-semester" class="glass-input h-14 w-full rounded-2xl px-5 text-base font-semibold appearance-none cursor-pointer hover:bg-white/40 transition-colors text-center outline-none focus:ring-0">
                                                     <!-- Generated via JS -->
                                                 </select>
-                                                <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none group-hover:text-blue-600 transition-colors"></i>
+                                                <!-- Arrow Removed -->
                                             </div>
                                         </div>
                                     </div>
@@ -347,7 +347,7 @@
                                         <span class="hidden sm:inline">Xóa tất cả</span>
                                     </button>
                                 </div>
-                                <div class="overflow-x-auto custom-scrollbar">
+                                <div class="overflow-x-auto custom-scrollbar pb-1">
                                     <table class="w-full border-collapse text-left min-w-[650px] md:min-w-0">
                                         <thead class="bg-white/10 text-slate-500 border-b border-white/20">
                                             <tr>
@@ -396,7 +396,7 @@
                                         </div>
                                         <div class="flex items-baseline gap-2 flex-wrap">
                                           <!-- Adjusted font size for responsiveness (text-4xl on tiny screens, 7xl on desktop) -->
-                                          <span id="stat-gpa4" class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter drop-shadow-md bg-gradient-to-b from-white to-blue-100/80 bg-clip-text text-transparent pb-2 pr-2 leading-none">0.00</span>
+                                          <span id="stat-gpa4" class="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter drop-shadow-md bg-gradient-to-b from-white to-blue-100/80 bg-clip-text text-transparent py-2 pr-2 leading-tight">0.00</span>
                                           
                                           <!-- Sim Delta -->
                                           <div id="sim-delta" class="hidden flex flex-col items-start ml-0 sm:ml-2 bg-black/20 rounded-lg px-2 py-1 backdrop-blur-sm mt-2 sm:mt-0">
@@ -420,7 +420,7 @@
                                         <div class="col-span-2 mt-2">
                                           <div class="flex items-center justify-between bg-white/20 rounded-xl px-4 py-3 border border-white/20 shadow-lg backdrop-blur-md">
                                               <span class="text-xs font-bold text-blue-100 uppercase">Xếp loại</span>
-                                              <span id="stat-classification" class="text-sm font-black text-white drop-shadow-sm">Chưa xếp loại</span>
+                                              <span id="stat-classification" class="text-sm font-black text-white drop-shadow-sm whitespace-nowrap">Chưa xếp loại</span>
                                           </div>
                                         </div>
                                      </div>
@@ -429,11 +429,8 @@
 
                             <!-- Reference Table -->
                             <div class="glass-card rounded-[2rem] sm:rounded-[2.5rem] p-6 order-last">
-                                <button onclick="toggleScale()" class="flex w-full items-center justify-between text-base font-bold text-slate-800 hover:text-blue-600 transition-colors py-1 group">
+                                <button onclick="toggleScale()" class="w-full text-center py-3 rounded-2xl bg-white/30 border border-white/40 hover:bg-white/50 text-base font-bold text-slate-800 hover:text-blue-600 transition-all shadow-sm active:scale-95">
                                     <span>Thang điểm tham khảo</span>
-                                    <div class="bg-white/50 p-2 rounded-full shadow-sm ring-1 ring-white/60 group-hover:ring-blue-200 transition-all backdrop-blur-sm">
-                                        <i id="icon-scale-toggle" data-lucide="chevron-down" class="h-5 w-5 text-slate-500 transition-transform duration-300"></i>
-                                    </div>
                                 </button>
                                 <div id="scale-table" class="hidden overflow-hidden pt-4">
                                     <table class="w-full text-xs">
@@ -1224,15 +1221,12 @@
         
         function toggleScale() {
             const scaleDiv = document.getElementById('scale-table');
-            const icon = document.getElementById('icon-scale-toggle');
             if (scaleDiv.classList.contains('hidden')) {
                 scaleDiv.classList.remove('hidden');
                 scaleDiv.classList.add('animate-enter'); 
-                icon.classList.add('rotate-180');
             } else {
                 scaleDiv.classList.add('hidden');
                 scaleDiv.classList.remove('animate-enter');
-                icon.classList.remove('rotate-180');
             }
         }
 
