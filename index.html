@@ -65,11 +65,13 @@
       .liquid-container {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
         background: radial-gradient(circle at 50% 50%, #f1f5f9, #dbeafe);
+        transform: translateZ(0); /* Hardware Acceleration Hint */
       }
       .liquid-blob {
         position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.7;
         animation: blobFloat 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
         mix-blend-mode: multiply;
+        will-change: transform; /* Hint for browser optimization */
       }
       @keyframes blobFloat {
         0% { transform: translate(0, 0) scale(1) rotate(0deg); }
@@ -194,13 +196,60 @@
       @keyframes fadeInScale { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
       .animate-enter { animation: fadeInScale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
+      /* ========================================= */
+      /* MOBILE OPTIMIZATION & PERFORMANCE FIXES */
+      /* ========================================= */
+      @media (max-width: 768px) {
+        /* 1. Disable Noise Effect (High CPU usage) */
+        .noise-bg { display: none !important; }
+
+        /* 2. Reduce Blob details (High GPU fill-rate) */
+        .liquid-blob {
+            filter: blur(40px) !important; /* Reduced blur radius */
+            opacity: 0.5 !important;
+        }
+
+        /* 3. Disable Backdrop Filter (The main cause of lag on mobile) */
+        .glass-panel, 
+        .glass-card, 
+        .glass-input, 
+        .glass-button, 
+        .glass-button-secondary,
+        #stats-modal .bg-white\/80 {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            /* Fallback to a solid/semi-solid color */
+            background: rgba(255, 255, 255, 0.94) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+        }
+
+        /* 4. Optimize Interactions */
+        .glass-card:hover, 
+        .table-row-anim:hover,
+        .glass-button:hover,
+        .glass-button-secondary:hover {
+            transform: none !important; /* Disable scale/translate on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* 5. Input optimization */
+        .glass-input:focus {
+            transform: none !important;
+            background: #ffffff !important;
+        }
+
+        /* 6. Sim Mode Specifics */
+        .sim-mode-active .glass-card {
+             background: #fdfbff !important; /* Solid color for sim mode */
+        }
+      }
+
     </style>
 </head>
 <body>
 
-    <!-- Enhanced Liquid Background -->
     <div class="liquid-container">
-        <!-- Softer, larger blobs for a dreamy liquid feel -->
         <div class="liquid-blob w-[800px] h-[800px] bg-[#60a5fa] top-[-20%] left-[-10%] opacity-30 filter blur-[100px]"></div>
         <div class="liquid-blob w-[700px] h-[700px] bg-[#a78bfa] top-[30%] right-[-20%] opacity-25 filter blur-[110px]" style="animation-duration: 30s; animation-delay: -5s"></div>
         <div class="liquid-blob w-[600px] h-[600px] bg-[#f472b6] bottom-[-15%] left-[10%] opacity-20 filter blur-[120px]" style="animation-duration: 25s; animation-delay: -10s"></div>
@@ -211,12 +260,10 @@
 
     <div class="relative min-h-screen flex flex-col font-sans overflow-hidden z-10" id="app-container">
         
-        <!-- Header: Floating Glass Strip -->
         <header class="sticky top-0 z-50 transition-all pt-3 px-3 lg:pt-6 lg:px-8">
             <div class="glass-panel rounded-[2rem] mx-auto max-w-[1200px] shadow-lg shadow-blue-900/5">
                 <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 px-6 py-4 relative z-50">
                     
-                    <!-- Logo -->
                     <div class="flex items-center gap-3 shrink-0 z-20 order-1 group cursor-default">
                         <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-500 to-cyan-500 text-white shadow-xl shadow-blue-500/30 ring-2 ring-white/50 transition-transform group-hover:rotate-12 group-hover:scale-105">
                             <i data-lucide="graduation-cap" class="h-6 w-6"></i>
@@ -224,7 +271,6 @@
                         <h2 class="hidden sm:block text-slate-800 text-2xl font-black tracking-tight drop-shadow-sm">GPA <span class="text-blue-600">Master</span></h2>
                     </div>
 
-                    <!-- Navigation -->
                     <div class="order-3 md:order-2 w-full md:w-auto flex justify-center z-10">
                         <div class="flex bg-white/30 rounded-full p-1.5 border border-white/40 backdrop-blur-xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] w-full md:w-auto justify-center">
                             <button onclick="switchTab('calculator')" id="nav-calculator" class="flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5">
@@ -236,9 +282,7 @@
                         </div>
                     </div>
 
-                    <!-- User & Sim -->
                     <div class="flex items-center gap-3 sm:gap-5 relative z-20 order-2 md:order-3 justify-end flex-1 md:flex-none">
-                         <!-- What-if Toggle -->
                          <div class="flex items-center gap-2 mr-1 sm:mr-2 bg-white/40 rounded-full pl-1.5 pr-3 sm:pr-4 py-1.5 border border-white/40 shadow-sm backdrop-blur-sm transition-colors hover:bg-white/60">
                             <label class="inline-flex items-center cursor-pointer relative">
                                 <input type="checkbox" id="sim-toggle" class="sr-only peer" onchange="toggleSimulation()">
@@ -272,7 +316,6 @@
 
         <main class="flex-grow w-full max-w-[1200px] mx-auto px-4 py-6 sm:py-8 z-10 relative">
             
-            <!-- Skeleton -->
             <div id="loading-skeleton" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 animate-pulse">
                 <div class="lg:col-span-8 space-y-6">
                     <div class="h-64 rounded-[3rem] bg-white/30 border border-white/30 backdrop-blur-sm"></div>
@@ -289,7 +332,6 @@
                         
                         <div class="flex flex-col gap-6 lg:col-span-8 order-1 lg:order-1">
 
-                            <!-- Input Card -->
                             <div class="glass-card p-6 sm:p-8 lg:p-10">
                                 <h3 class="mb-8 flex items-center gap-4 text-xl font-bold text-slate-800">
                                     <div class="bg-blue-500/10 p-3 rounded-2xl text-blue-600 ring-1 ring-blue-500/20 shadow-sm backdrop-blur-sm">
@@ -308,8 +350,7 @@
                                             <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Học kỳ</label>
                                             <div class="relative group">
                                                 <select id="input-semester" class="glass-input h-14 w-full px-6 text-base font-semibold appearance-none cursor-pointer hover:bg-white/50 transition-colors text-center outline-none focus:ring-0">
-                                                    <!-- Generated via JS -->
-                                                </select>
+                                                    </select>
                                             </div>
                                         </div>
                                     </div>
@@ -340,7 +381,6 @@
                                 </div>
                             </div>
 
-                            <!-- List Card -->
                             <div class="flex flex-col overflow-hidden glass-card transition-colors duration-500" id="list-card">
                                 <div class="flex items-center justify-between border-b border-white/40 bg-white/20 px-8 py-6 backdrop-blur-xl">
                                     <h3 class="text-xl font-bold text-slate-800 flex items-center gap-3">
@@ -372,16 +412,12 @@
                             </div>
                         </div>
 
-                        <!-- Sidebar Stats -->
                         <div class="flex flex-col gap-6 lg:col-span-4 order-2 lg:order-2 lg:sticky lg:top-28">
                             
-                            <!-- Main Stats Card: Gradient Glass -->
                             <div class="group/stats relative overflow-hidden rounded-[3rem] p-8 text-white shadow-2xl shadow-blue-600/20 border border-white/40 transition-all hover:translate-y-[-6px] duration-700">
-                                 <!-- Dynamic background -->
                                  <div class="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-indigo-600/90 to-purple-600/90 transition-all duration-700 backdrop-blur-2xl" id="stats-bg"></div>
                                  <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
                                  
-                                 <!-- Glows -->
                                  <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-cyan-400 blur-[90px] opacity-40 group-hover/stats:opacity-60 transition-opacity duration-1000"></div>
                                  <div class="absolute -left-20 -bottom-20 h-56 w-56 rounded-full bg-pink-500 blur-[90px] opacity-40 group-hover/stats:opacity-60 transition-opacity duration-1000 delay-100"></div>
 
@@ -402,7 +438,6 @@
                                         <div class="flex items-baseline gap-3 flex-wrap">
                                           <span id="stat-gpa4" class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter drop-shadow-xl bg-gradient-to-b from-white via-white to-blue-200 bg-clip-text text-transparent py-2 pr-2 leading-none filter">0.00</span>
                                           
-                                          <!-- Sim Delta -->
                                           <div id="sim-delta" class="hidden flex flex-col items-start ml-1 bg-black/20 rounded-xl px-3 py-1.5 backdrop-blur-md border border-white/10 shadow-lg">
                                               <span class="text-[10px] text-white/70 font-bold uppercase whitespace-nowrap mb-0.5">Thực tế: <span id="real-gpa-val" class="text-white">0.00</span></span>
                                               <span id="diff-val" class="text-base font-black text-green-300 drop-shadow-md leading-none">+0.00</span>
@@ -431,7 +466,6 @@
                                  </div>
                             </div>
 
-                            <!-- Reference Table -->
                             <div class="glass-card rounded-[3rem] p-6 order-last">
                                 <button onclick="toggleScale()" class="w-full text-center py-4 rounded-2xl bg-white/40 border border-white/50 hover:bg-white/60 text-base font-bold text-slate-800 hover:text-blue-600 transition-all shadow-sm active:scale-95">
                                     <span>Thang điểm tham khảo</span>
@@ -508,7 +542,6 @@
 
                         <div class="lg:col-span-8 flex flex-col gap-6">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <!-- Result Card -->
                                 <div class="glass-card p-8 rounded-[3rem] relative overflow-hidden group">
                                     <div id="blob-required" class="absolute -right-8 -top-8 h-48 w-48 rounded-full blur-3xl transition-all duration-700 bg-slate-400/20 group-hover:scale-110"></div>
                                     <div class="relative z-10">
@@ -521,7 +554,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Difference Card -->
                                 <div class="glass-card p-8 rounded-[3rem] flex flex-col justify-between relative overflow-hidden">
                                     <div class="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-bl-[4rem] pointer-events-none"></div>
                                     <div>
@@ -541,7 +573,6 @@
                                 </div>
                             </div>
 
-                            <!-- Chart Section -->
                             <div id="goal-chart-container" class="glass-card p-8 rounded-[3rem] flex flex-col hidden">
                                 <div class="flex items-center justify-between mb-8">
                                     <h3 class="text-xl font-bold text-slate-800">Phân bổ điểm số đề xuất</h3>
@@ -593,13 +624,10 @@
             </div>
         </footer>
 
-        <!-- Modal Overlay -->
         <div id="stats-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-xl transition-opacity duration-300" onclick="closeStatsModal()"></div>
-            <!-- Scrollable container for modal -->
             <div class="relative w-full max-w-3xl transform rounded-[3rem] bg-white/80 shadow-2xl transition-all animate-enter border border-white/60 backdrop-blur-3xl flex flex-col max-h-[90vh] ring-1 ring-white/50 overflow-hidden">
                 
-                <!-- Modal Header -->
                 <div class="flex items-center justify-between px-8 py-6 border-b border-slate-200/50 bg-white/40">
                      <div class="flex items-center gap-4">
                         <div class="p-2.5 bg-blue-500/10 rounded-2xl text-blue-600 shadow-sm">
@@ -612,10 +640,8 @@
                      </button>
                 </div>
 
-                <!-- Scrollable Content -->
                 <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
                     
-                    <!-- Top Section: Grade Distribution -->
                     <div class="mb-10">
                         <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-5 pl-2">Phân bố điểm số</h3>
                         <div class="h-72 w-full bg-white/40 rounded-[2rem] p-5 border border-white/60 shadow-inner">
@@ -624,7 +650,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Left: Stats Grid -->
                         <div class="grid grid-cols-2 gap-5 h-fit">
                             <div class="bg-white/50 p-5 rounded-[2rem] border border-white/60 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-white/80 transition-colors group">
                                 <span class="text-3xl font-black text-slate-800 group-hover:scale-110 transition-transform" id="modal-total-subjects">0</span>
@@ -644,7 +669,6 @@
                             </div>
                         </div>
 
-                        <!-- Right: Credits Chart -->
                         <div>
                              <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-5 pl-2 text-center md:text-left">Tỷ lệ tích lũy</h3>
                              <div class="h-56 w-full flex items-center justify-center relative bg-white/30 rounded-[2rem] border border-white/40 shadow-sm p-4">
@@ -657,7 +681,6 @@
                     </div>
                 </div>
 
-                <!-- Footer -->
                 <div class="p-6 border-t border-slate-200/50 bg-white/40 backdrop-blur-md">
                     <button onclick="closeStatsModal()" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98]">
                         Đóng thống kê
@@ -1188,12 +1211,10 @@
                     <tr class="border-b border-transparent">
                         <td colspan="8" class="pt-8 pb-3 px-2 sm:px-4">
                             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                                <!-- Title Bubble -->
                                 <div class="glass-card px-5 py-2.5 rounded-2xl border border-blue-200/50 bg-blue-50/30 backdrop-blur-md shadow-sm w-fit">
                                     <span class="text-xs font-black uppercase tracking-widest text-blue-600 drop-shadow-sm whitespace-nowrap">${sem}</span>
                                 </div>
                                 
-                                <!-- Stats Bubbles -->
                                 <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
                                      <div class="glass-card px-3.5 py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
                                         <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">GPA</span>
