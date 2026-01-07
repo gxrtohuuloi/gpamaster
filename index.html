@@ -320,7 +320,7 @@
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div class="md:col-span-2 flex flex-col gap-2.5">
                                             <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Tên môn học</label>
-                                            <input id="input-name" type="text" placeholder="Ví dụ: Đại Số Tuyến Tính" class="glass-input h-14 w-full px-6 text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80" onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()">
+                                            <input id="input-name" type="text" placeholder="Ví dụ: Đại Số Tuyến Tính" class="glass-input h-14 w-full px-6 text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 capitalize" oninput="this.value = this.value.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });" onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()">
                                         </div>
                                         <div class="flex flex-col gap-2.5">
                                             <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Học kỳ</label>
@@ -797,6 +797,8 @@
         function toTitleCase(str) {
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
+        // Expose to global window scope for inline HTML event handlers
+        window.toTitleCase = toTitleCase;
 
         // --- SIMULATION MODE LOGIC ---
         window.toggleSimulation = function() {
@@ -1288,7 +1290,7 @@
             const currentInput = document.getElementById('goal-current-gpa');
             const accInput = document.getElementById('goal-accumulated-credits');
             if(currentInput) currentInput.value = formatNumber(stats.gpa4);
-            if(accInput) accInput.value = stats.gpaCredits;
+            if(accInput) accInput.value = stats.totalCredits;
 
             calculateGoal();
         }
@@ -1312,7 +1314,7 @@
 
             const currentStats = isSimulating ? calculateGPA(simulatedSubjects) : calculateGPA(subjects);
             const currentGPA = currentStats.gpa4;
-            const currentCredits = currentStats.gpaCredits; // Use Accumulated Credits for calculation
+            const currentCredits = currentStats.totalCredits; // Use Accumulated Credits for calculation
 
             const targetGPA = parseInputNumber(tGPAInput.value);
             const targetCredits = parseInputNumber(tCredInput.value);
