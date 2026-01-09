@@ -49,6 +49,14 @@
         color: #1e293b;
         overflow-x: hidden;
         -webkit-tap-highlight-color: transparent;
+        /* Mobile scroll performance */
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Performance: Font smoothing */
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
       /* Hide number input spinners */
@@ -61,86 +69,96 @@
         -moz-appearance: textfield;
       }
 
-      /* Animated Background Blobs */
+      /* Animated Background Blobs - Optimized */
       .liquid-container {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
         background: radial-gradient(circle at 50% 50%, #f1f5f9, #dbeafe);
+        transform: translateZ(0); /* Promote layer */
       }
       .liquid-blob {
-        position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.7;
+        position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.7; /* Reduced blur radius for performance */
         animation: blobFloat 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
         mix-blend-mode: multiply;
+        /* Performance Fixes */
+        will-change: transform;
+        transform: translate3d(0,0,0);
+        backface-visibility: hidden;
       }
       @keyframes blobFloat {
-        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-        50% { transform: translate(30px, -30px) scale(1.1) rotate(10deg); }
-        100% { transform: translate(-20px, 20px) scale(0.9) rotate(-5deg); }
+        0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+        50% { transform: translate3d(30px, -30px, 0) scale(1.1) rotate(10deg); }
+        100% { transform: translate3d(-20px, 20px, 0) scale(0.9) rotate(-5deg); }
       }
 
-      /* Noise Texture */
+      /* Noise Texture - Layer Promotion */
       .noise-bg {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.04;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        transform: translateZ(0);
       }
 
-      /* --- LIQUID GLASS STYLES --- */
+      /* --- LIQUID GLASS STYLES - Optimized for Mobile --- */
       
       .glass-panel {
         background: rgba(255, 255, 255, 0.6);
-        backdrop-filter: blur(30px) saturate(180%);
-        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
         border: 1px solid rgba(255, 255, 255, 0.5);
         border-top: 1px solid rgba(255, 255, 255, 0.8);
         box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+        transform: translateZ(0);
       }
 
       .glass-card {
         background: linear-gradient(145deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
-        backdrop-filter: blur(50px) saturate(160%);
-        -webkit-backdrop-filter: blur(50px) saturate(160%);
+        /* Reduced blur for better FPS */
+        backdrop-filter: blur(30px) saturate(160%);
+        -webkit-backdrop-filter: blur(30px) saturate(160%);
         border: 1px solid rgba(255, 255, 255, 0.4);
         border-top: 1px solid rgba(255, 255, 255, 0.9);
         border-left: 1px solid rgba(255, 255, 255, 0.8);
         box-shadow: 
             0 20px 50px -12px rgba(0, 0, 0, 0.1), 
-            inset 0 0 0 2px rgba(255, 255, 255, 0.1); /* Glossy ring */
+            inset 0 0 0 2px rgba(255, 255, 255, 0.1); 
         position: relative; 
         transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
-        border-radius: 2.5rem; /* Enhanced rounding */
+        border-radius: 2.5rem; 
+        transform: translateZ(0); /* Hardware acceleration */
       }
       
       .glass-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-5px) translateZ(0);
         box-shadow: 
             0 25px 60px -12px rgba(59, 130, 246, 0.15), 
             inset 0 0 0 2px rgba(255, 255, 255, 0.3);
       }
 
-      /* Inputs: Deep liquid recess */
+      /* Inputs */
       .glass-input {
         background: rgba(255, 255, 255, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.6);
         border-top: 1px solid rgba(0, 0, 0, 0.03); 
         box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.03), inset -1px -1px 4px rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(15px);
+        backdrop-filter: blur(10px); /* Reduced */
         color: #1e293b;
         transition: all 0.3s ease;
-        border-radius: 1.5rem; /* Very rounded */
+        border-radius: 1.5rem; 
+        transform: translateZ(0);
       }
       .glass-input:focus {
         background: rgba(255, 255, 255, 0.85);
         border-color: rgba(59, 130, 246, 0.5);
         box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 0 0 1px rgba(255,255,255,1);
         outline: none;
-        transform: translateY(-1px);
+        transform: translateY(-1px) translateZ(0);
       }
 
-      /* Buttons: Liquid Bubble */
+      /* Buttons */
       .glass-button {
         background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-top: 1px solid rgba(255, 255, 255, 0.6);
-        border-radius: 9999px; /* Pill shape */
+        border-radius: 9999px; 
         box-shadow: 
             0 6px 20px rgba(37, 99, 235, 0.35), 
             inset 0 2px 0 rgba(255, 255, 255, 0.3),
@@ -148,13 +166,14 @@
         color: white;
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        transform: translateZ(0);
       }
       .glass-button:hover {
-        transform: translateY(-3px) scale(1.02);
+        transform: translateY(-3px) scale(1.02) translateZ(0);
         box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.4);
         filter: brightness(1.1);
       }
-      .glass-button:active { transform: translateY(-1px) scale(0.98); }
+      .glass-button:active { transform: translateY(-1px) scale(0.98) translateZ(0); }
 
       .glass-button-secondary {
         background: rgba(255, 255, 255, 0.4);
@@ -162,11 +181,12 @@
         color: #3b82f6;
         transition: all 0.3s;
         border-radius: 1.5rem;
+        transform: translateZ(0);
       }
       .glass-button-secondary:hover {
         background: rgba(255, 255, 255, 0.75);
         border-color: #3b82f6;
-        transform: translateY(-2px);
+        transform: translateY(-2px) translateZ(0);
         box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
       }
 
@@ -174,8 +194,8 @@
       .custom-scrollbar::-webkit-scrollbar { display: none; }
       
       /* Row Animation */
-      .table-row-anim { transition: all 0.2s; border-radius: 1rem; }
-      .table-row-anim:hover { background-color: rgba(255, 255, 255, 0.5); transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+      .table-row-anim { transition: all 0.2s; border-radius: 1rem; transform: translateZ(0); }
+      .table-row-anim:hover { background-color: rgba(255, 255, 255, 0.5); transform: scale(1.01) translateZ(0); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 
       /* Sim Mode */
       .sim-mode-active .glass-card { 
@@ -455,26 +475,30 @@
                                 <button onclick="toggleScale()" class="w-full text-center py-3 sm:py-4 rounded-2xl bg-white/40 border border-white/50 hover:bg-white/60 text-sm sm:text-base font-bold text-slate-800 hover:text-blue-600 transition-all shadow-sm active:scale-95">
                                     <span>Thang điểm tham khảo</span>
                                 </button>
-                                <div id="scale-table" class="hidden overflow-hidden pt-4 sm:pt-5">
-                                    <table class="w-full text-xs">
-                                        <thead>
-                                            <tr class="border-b border-slate-200/50 text-slate-500">
-                                                <th class="py-2 text-left pl-2">Điểm (10)</th>
-                                                <th class="py-2 text-center">Chữ</th>
-                                                <th class="py-2 text-right pr-2">Điểm (4)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-slate-200/40">
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">9.0 - 10.0</td><td class="py-3 text-center"><span class="font-bold bg-green-100/80 text-green-700 px-2.5 py-1 rounded-md border border-green-200 shadow-sm">A</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">4.0</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">8.0 - 8.9</td><td class="py-3 text-center"><span class="font-bold bg-blue-100/80 text-blue-700 px-2.5 py-1 rounded-md border border-blue-200 shadow-sm">B+</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">3.5</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">7.0 - 7.9</td><td class="py-3 text-center"><span class="font-bold bg-cyan-100/80 text-cyan-700 px-2.5 py-1 rounded-md border border-cyan-200 shadow-sm">B</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">3.0</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">6.5 - 6.9</td><td class="py-3 text-center"><span class="font-bold bg-yellow-100/80 text-yellow-700 px-2.5 py-1 rounded-md border border-yellow-200 shadow-sm">C+</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">2.5</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">5.5 - 6.4</td><td class="py-3 text-center"><span class="font-bold bg-orange-100/80 text-orange-700 px-2.5 py-1 rounded-md border border-orange-200 shadow-sm">C</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">2.0</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">5.0 - 5.4</td><td class="py-3 text-center"><span class="font-bold bg-red-100/80 text-red-700 px-2.5 py-1 rounded-md border border-red-200 shadow-sm">D+</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">1.5</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">4.0 - 4.9</td><td class="py-3 text-center"><span class="font-bold bg-red-100/80 text-red-800 px-2.5 py-1 rounded-md border border-red-200 shadow-sm">D</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">1.0</td></tr>
-                                            <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">&lt; 4.0</td><td class="py-3 text-center"><span class="font-bold bg-slate-200/80 text-slate-600 px-2.5 py-1 rounded-md border border-slate-300 shadow-sm">F</span></td><td class="py-3 pr-3 text-right font-black text-slate-400">0.0</td></tr>
-                                        </tbody>
-                                    </table>
+                                <div id="scale-table" class="grid grid-rows-[0fr] opacity-0 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]">
+                                    <div class="overflow-hidden">
+                                        <div class="pt-4 sm:pt-5">
+                                            <table class="w-full text-xs">
+                                                <thead>
+                                                    <tr class="border-b border-slate-200/50 text-slate-500">
+                                                        <th class="py-2 text-left pl-2">Điểm (10)</th>
+                                                        <th class="py-2 text-center">Chữ</th>
+                                                        <th class="py-2 text-right pr-2">Điểm (4)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-slate-200/40">
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">9.0 - 10.0</td><td class="py-3 text-center"><span class="font-bold bg-green-100/80 text-green-700 px-2.5 py-1 rounded-md border border-green-200 shadow-sm">A</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">4.0</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">8.0 - 8.9</td><td class="py-3 text-center"><span class="font-bold bg-blue-100/80 text-blue-700 px-2.5 py-1 rounded-md border border-blue-200 shadow-sm">B+</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">3.5</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">7.0 - 7.9</td><td class="py-3 text-center"><span class="font-bold bg-cyan-100/80 text-cyan-700 px-2.5 py-1 rounded-md border border-cyan-200 shadow-sm">B</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">3.0</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">6.5 - 6.9</td><td class="py-3 text-center"><span class="font-bold bg-yellow-100/80 text-yellow-700 px-2.5 py-1 rounded-md border border-yellow-200 shadow-sm">C+</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">2.5</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">5.5 - 6.4</td><td class="py-3 text-center"><span class="font-bold bg-orange-100/80 text-orange-700 px-2.5 py-1 rounded-md border border-orange-200 shadow-sm">C</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">2.0</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">5.0 - 5.4</td><td class="py-3 text-center"><span class="font-bold bg-red-100/80 text-red-700 px-2.5 py-1 rounded-md border border-red-200 shadow-sm">D+</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">1.5</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">4.0 - 4.9</td><td class="py-3 text-center"><span class="font-bold bg-red-100/80 text-red-800 px-2.5 py-1 rounded-md border border-red-200 shadow-sm">D</span></td><td class="py-3 pr-3 text-right font-black text-blue-600">1.0</td></tr>
+                                                    <tr class="text-slate-700 hover:bg-white/40 table-row-anim"><td class="py-3 pl-3 font-medium">&lt; 4.0</td><td class="py-3 text-center"><span class="font-bold bg-slate-200/80 text-slate-600 px-2.5 py-1 rounded-md border border-slate-300 shadow-sm">F</span></td><td class="py-3 pr-3 text-right font-black text-slate-400">0.0</td></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1224,7 +1248,7 @@
             });
 
             tbody.innerHTML = html;
-            lucide.createIcons();
+            lucide.createIcons({ root: tbody }); // SCOPED RENDERING OPTIMIZATION
         }
 
         function updateStats() {
@@ -1452,10 +1476,12 @@
         window.toggleScale = function() {
              const table = document.getElementById('scale-table');
              if(table) {
-                 if(table.classList.contains('hidden')) {
-                     table.classList.remove('hidden');
+                 if(table.classList.contains('grid-rows-[0fr]')) {
+                     table.classList.remove('grid-rows-[0fr]', 'opacity-0');
+                     table.classList.add('grid-rows-[1fr]', 'opacity-100');
                  } else {
-                     table.classList.add('hidden');
+                     table.classList.remove('grid-rows-[1fr]', 'opacity-100');
+                     table.classList.add('grid-rows-[0fr]', 'opacity-0');
                  }
              }
         };
