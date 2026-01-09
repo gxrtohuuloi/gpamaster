@@ -187,9 +187,10 @@
         background: transparent;
         border: none;
         border-bottom: 2px solid #a78bfa;
-        color: #7c3aed; font-weight: 700; text-align: center; width: 100%; min-width: 50px; padding: 4px;
+        color: #7c3aed; font-weight: 700; text-align: center; width: 100%; min-width: 40px; padding: 2px;
         transition: all 0.2s;
         border-radius: 0;
+        font-size: 0.875rem; /* text-sm */
       }
       .sim-input:focus { background: rgba(255,255,255,0.5); box-shadow: none; border-bottom-color: #6d28d9; outline: none; }
 
@@ -230,7 +231,7 @@
         <!-- Header: Floating Glass Strip -->
         <header class="sticky top-0 z-50 transition-all pt-3 px-3 lg:pt-6 lg:px-8">
             <div class="glass-panel rounded-[2rem] mx-auto max-w-[1200px] shadow-lg shadow-blue-900/5">
-                <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 px-6 py-4 relative z-50">
+                <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 px-4 py-3 sm:px-6 sm:py-4 relative z-50">
                     
                     <!-- Logo -->
                     <div class="flex items-center gap-3 shrink-0 z-20 order-1 group cursor-default">
@@ -243,25 +244,25 @@
                     <!-- Navigation -->
                     <div class="order-3 md:order-2 w-full md:w-auto flex justify-center z-10">
                         <div class="flex bg-white/30 rounded-full p-1.5 border border-white/40 backdrop-blur-xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)] w-full md:w-auto justify-center">
-                            <button onclick="switchTab('calculator')" id="nav-calculator" class="flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5">
+                            <button onclick="switchTab('calculator')" id="nav-calculator" class="flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5">
                                 Tính điểm
                             </button>
-                            <button onclick="switchTab('goal')" id="nav-goal" class="flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40">
+                            <button onclick="switchTab('goal')" id="nav-goal" class="flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40">
                                 Mục tiêu
                             </button>
                         </div>
                     </div>
 
                     <!-- User & Sim -->
-                    <div class="flex items-center gap-3 sm:gap-5 relative z-20 order-2 md:order-3 justify-end flex-1 md:flex-none">
+                    <div class="flex items-center gap-2 sm:gap-5 relative z-20 order-2 md:order-3 justify-end flex-1 md:flex-none">
                          <!-- What-if Toggle (Updated to Match Image) -->
                          <div class="flex items-center mr-1 sm:mr-2">
-                             <label class="flex items-center cursor-pointer p-1.5 bg-white rounded-full border border-slate-200/60 shadow-sm gap-3 pr-4">
+                             <label class="flex items-center cursor-pointer p-1.5 bg-white rounded-full border border-slate-200/60 shadow-sm gap-2 sm:gap-3 pr-3 sm:pr-4">
                                 <div class="relative">
                                     <input type="checkbox" id="sim-toggle" class="sr-only peer" onchange="toggleSimulation()">
                                     <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:shadow-sm peer-checked:bg-slate-800"></div>
                                 </div>
-                                <span class="text-sm font-bold text-slate-700 select-none">Dự tính</span>
+                                <span class="text-xs sm:text-sm font-bold text-slate-700 select-none whitespace-nowrap">Dự tính</span>
                             </label>
                         </div>
 
@@ -280,7 +281,7 @@
                                 placeholder="MSSV" 
                                 onchange="handleStudentIdChange(this.value)" 
                                 onkeydown="if(event.key === 'Enter') this.blur()"
-                                class="bg-transparent border-none p-0 text-sm font-bold text-slate-700 placeholder-slate-400 w-20 sm:w-28 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left transition-all"
+                                class="bg-transparent border-none p-0 text-sm font-bold text-slate-700 placeholder-slate-400 w-16 sm:w-28 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left transition-all"
                             >
                         </div>
                     </div>
@@ -288,7 +289,7 @@
             </div>
         </header>
 
-        <main class="flex-grow w-full max-w-[1200px] mx-auto px-4 py-6 sm:py-8 z-10 relative">
+        <main class="flex-grow w-full max-w-[1200px] mx-auto px-3 sm:px-4 py-4 sm:py-8 z-10 relative">
             
             <!-- Skeleton -->
             <div id="loading-skeleton" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 animate-pulse">
@@ -308,49 +309,49 @@
                         <div class="flex flex-col gap-6 lg:col-span-8 order-1 lg:order-1">
 
                             <!-- Input Card -->
-                            <div class="glass-card p-6 sm:p-8 lg:p-10">
-                                <h3 class="mb-8 flex items-center gap-4 text-xl font-bold text-slate-800">
-                                    <div class="bg-blue-500/10 p-3 rounded-2xl text-blue-600 ring-1 ring-blue-500/20 shadow-sm backdrop-blur-sm">
-                                        <i data-lucide="plus" class="w-6 h-6"></i>
+                            <div class="glass-card p-4 sm:p-8 lg:p-10">
+                                <h3 class="mb-6 sm:mb-8 flex items-center gap-4 text-lg sm:text-xl font-bold text-slate-800">
+                                    <div class="bg-blue-500/10 p-2 sm:p-3 rounded-2xl text-blue-600 ring-1 ring-blue-500/20 shadow-sm backdrop-blur-sm">
+                                        <i data-lucide="plus" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                                     </div>
                                     Nhập thông tin môn học
                                 </h3>
                                 
-                                <div class="flex flex-col gap-6">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div class="md:col-span-2 flex flex-col gap-2.5">
-                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Tên môn học</label>
-                                            <input id="input-name" type="text" placeholder="Ví dụ: Đại Số Tuyến Tính" class="glass-input h-14 w-full px-6 text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 capitalize" oninput="this.value = this.value.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });" onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()">
+                                <div class="flex flex-col gap-4 sm:gap-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                                        <div class="md:col-span-2 flex flex-col gap-2">
+                                            <label class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 ml-1 sm:ml-2">Tên môn học</label>
+                                            <input id="input-name" type="text" placeholder="Ví dụ: Đại Số Tuyến Tính" class="glass-input h-12 sm:h-14 w-full px-4 sm:px-6 text-sm sm:text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 capitalize" oninput="this.value = this.value.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });" onkeydown="if(event.key === 'Enter') document.getElementById('input-credits').focus()">
                                         </div>
-                                        <div class="flex flex-col gap-2.5">
-                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Học kỳ</label>
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 ml-1 sm:ml-2">Học kỳ</label>
                                             <div class="relative group">
-                                                <select id="input-semester" class="glass-input h-14 w-full px-6 text-base font-semibold appearance-none cursor-pointer hover:bg-white/50 transition-colors text-center outline-none focus:ring-0">
+                                                <select id="input-semester" class="glass-input h-12 sm:h-14 w-full px-4 sm:px-6 text-sm sm:text-base font-semibold appearance-none cursor-pointer hover:bg-white/50 transition-colors text-center outline-none focus:ring-0">
                                                     <!-- Generated via JS -->
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="grid grid-cols-2 gap-6">
-                                        <div class="flex flex-col gap-2.5">
-                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Số tín chỉ</label>
-                                            <input id="input-credits" type="number" placeholder="3" min="1" max="10" inputmode="numeric" class="glass-input h-14 w-full px-6 text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 text-center" onkeydown="if(event.key === 'Enter') document.getElementById('input-score').focus()">
+                                    <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 ml-1 sm:ml-2">Số tín chỉ</label>
+                                            <input id="input-credits" type="number" placeholder="3" min="1" max="10" inputmode="numeric" class="glass-input h-12 sm:h-14 w-full px-4 sm:px-6 text-sm sm:text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 text-center" onkeydown="if(event.key === 'Enter') document.getElementById('input-score').focus()">
                                         </div>
-                                        <div class="flex flex-col gap-2.5">
-                                            <label class="text-xs font-bold uppercase tracking-wider text-slate-500 ml-2">Điểm (hệ 10)</label>
-                                            <input id="input-score" type="text" placeholder="8.5" inputmode="decimal" class="glass-input h-14 w-full px-6 text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 text-center" onkeydown="if(event.key === 'Enter') addSubject()">
+                                        <div class="flex flex-col gap-2">
+                                            <label class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 ml-1 sm:ml-2">Điểm (hệ 10)</label>
+                                            <input id="input-score" type="text" placeholder="8.5" inputmode="decimal" class="glass-input h-12 sm:h-14 w-full px-4 sm:px-6 text-sm sm:text-base font-semibold placeholder:font-normal placeholder:text-slate-400/80 text-center" onkeydown="if(event.key === 'Enter') addSubject()">
                                         </div>
                                     </div>
                                     
-                                    <div class="flex items-center gap-4 pt-3">
-                                        <button id="btn-accumulate" onclick="toggleNewAccumulate()" class="glass-button-secondary flex items-center gap-2.5 h-14 px-6 active:scale-95 transition-all text-blue-600 bg-blue-50/50 border-blue-200" title="Tích lũy vào GPA?">
-                                            <i data-lucide="check-circle-2" class="h-5 w-5 shrink-0"></i>
-                                            <span class="text-sm font-bold whitespace-nowrap">Tích lũy</span>
+                                    <div class="flex items-center gap-3 sm:gap-4 pt-2 sm:pt-3">
+                                        <button id="btn-accumulate" onclick="toggleNewAccumulate()" class="glass-button-secondary flex items-center gap-2 h-12 sm:h-14 px-4 sm:px-6 active:scale-95 transition-all text-blue-600 bg-blue-50/50 border-blue-200" title="Tích lũy vào GPA?">
+                                            <i data-lucide="check-circle-2" class="h-4 w-4 sm:h-5 sm:w-5 shrink-0"></i>
+                                            <span class="text-xs sm:text-sm font-bold whitespace-nowrap">Tích lũy</span>
                                         </button>
                                         
-                                        <button onclick="addSubject()" id="btn-add-main" class="glass-button flex-1 h-14 flex items-center justify-center gap-2 text-base font-bold active:scale-95 shadow-blue-500/30">
-                                            <i data-lucide="plus" class="h-6 w-6"></i>
+                                        <button onclick="addSubject()" id="btn-add-main" class="glass-button flex-1 h-12 sm:h-14 flex items-center justify-center gap-2 text-sm sm:text-base font-bold active:scale-95 shadow-blue-500/30">
+                                            <i data-lucide="plus" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                                             <span class="hidden sm:inline">Thêm môn học</span>
                                             <span class="inline sm:hidden">Thêm</span>
                                         </button>
@@ -360,28 +361,28 @@
 
                             <!-- List Card -->
                             <div class="flex flex-col overflow-hidden glass-card transition-colors duration-500" id="list-card">
-                                <div class="flex items-center justify-between border-b border-white/40 bg-white/20 px-8 py-6 backdrop-blur-xl">
-                                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+                                <div class="flex items-center justify-between border-b border-white/40 bg-white/20 px-4 py-4 sm:px-8 sm:py-6 backdrop-blur-xl">
+                                    <h3 class="text-lg sm:text-xl font-bold text-slate-800 flex items-center gap-3">
                                         Danh sách môn
                                         <span id="sim-badge" class="hidden text-[10px] bg-purple-100/90 text-purple-700 px-3 py-1 rounded-lg border border-purple-200 uppercase tracking-wider animate-pulse font-extrabold shadow-sm">Dự tính</span>
                                     </h3>
-                                    <button onclick="deleteAllSubjects()" id="btn-delete-all" class="flex items-center gap-2 text-xs font-bold text-red-500 hover:text-red-600 transition-colors px-4 py-2 rounded-xl hover:bg-red-50/50 active:bg-red-100 ring-1 ring-transparent hover:ring-red-200/50 backdrop-blur-sm">
+                                    <button onclick="deleteAllSubjects()" id="btn-delete-all" class="flex items-center gap-2 text-xs font-bold text-red-500 hover:text-red-600 transition-colors px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl hover:bg-red-50/50 active:bg-red-100 ring-1 ring-transparent hover:ring-red-200/50 backdrop-blur-sm">
                                         <i data-lucide="trash-2" class="h-4 w-4"></i>
                                         <span class="hidden sm:inline">Xóa tất cả</span>
                                     </button>
                                 </div>
                                 <div class="overflow-x-auto custom-scrollbar pb-2">
-                                    <table class="w-full border-collapse text-left min-w-[650px] md:min-w-0">
+                                    <table class="w-full border-collapse text-left min-w-full sm:min-w-[650px]">
                                         <thead class="bg-white/10 text-slate-500 border-b border-white/20">
                                             <tr>
-                                                <th class="px-5 py-5 text-xs font-bold uppercase tracking-wider hidden sm:table-cell pl-8 opacity-70 w-16 text-center">STT</th>
-                                                <th class="px-5 py-5 text-xs font-bold uppercase tracking-wider w-1/3 min-w-[140px] opacity-70">Môn học</th>
-                                                <th class="px-5 py-5 text-center text-xs font-bold uppercase tracking-wider opacity-70 w-16">TC</th>
-                                                <th class="px-5 py-5 text-center text-xs font-bold uppercase tracking-wider opacity-70 w-24">Tích lũy</th>
-                                                <th class="px-5 py-5 text-center text-xs font-bold uppercase tracking-wider opacity-70 w-24">Điểm (10)</th>
-                                                <th class="px-5 py-5 text-center text-xs font-bold uppercase tracking-wider text-blue-600 w-24">Điểm (4)</th>
-                                                <th class="px-5 py-5 text-center text-xs font-bold uppercase tracking-wider opacity-70 w-20">Chữ</th>
-                                                <th class="px-5 py-5 text-right text-xs font-bold uppercase tracking-wider pr-8 opacity-70 w-16">Xóa</th>
+                                                <th class="px-2 py-3 sm:px-5 sm:py-5 text-[10px] sm:text-xs font-bold uppercase tracking-wider hidden sm:table-cell pl-8 opacity-70 w-16 text-center">STT</th>
+                                                <th class="px-2 py-3 sm:px-5 sm:py-5 text-[10px] sm:text-xs font-bold uppercase tracking-wider w-auto sm:w-1/3 min-w-[100px] sm:min-w-[140px] opacity-70">Môn học</th>
+                                                <th class="px-1 py-3 sm:px-5 sm:py-5 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-70 w-10 sm:w-16">TC</th>
+                                                <th class="px-1 py-3 sm:px-5 sm:py-5 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-70 w-12 sm:w-24">Tích lũy</th>
+                                                <th class="px-1 py-3 sm:px-5 sm:py-5 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-70 w-12 sm:w-24">Đ(10)</th>
+                                                <th class="px-1 py-3 sm:px-5 sm:py-5 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider text-blue-600 w-12 sm:w-24">Đ(4)</th>
+                                                <th class="px-1 py-3 sm:px-5 sm:py-5 text-center text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-70 w-10 sm:w-20">Chữ</th>
+                                                <th class="px-1 py-3 sm:px-5 sm:py-5 text-right text-[10px] sm:text-xs font-bold uppercase tracking-wider pr-2 sm:pr-8 opacity-70 w-10 sm:w-16">Xóa</th>
                                             </tr>
                                         </thead>
                                         <tbody id="subject-list" class="divide-y divide-white/30"></tbody>
@@ -394,7 +395,7 @@
                         <div class="flex flex-col gap-6 lg:col-span-4 order-2 lg:order-2 lg:sticky lg:top-28">
                             
                             <!-- Main Stats Card: Gradient Glass -->
-                            <div class="group/stats relative overflow-hidden rounded-[3rem] p-8 text-white shadow-2xl shadow-blue-600/20 border border-white/40 transition-all hover:translate-y-[-6px] duration-700">
+                            <div class="group/stats relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] p-5 sm:p-8 text-white shadow-2xl shadow-blue-600/20 border border-white/40 transition-all hover:translate-y-[-6px] duration-700">
                                  <!-- Dynamic background -->
                                  <div class="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-indigo-600/90 to-purple-600/90 transition-all duration-700 backdrop-blur-2xl" id="stats-bg"></div>
                                  <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
@@ -404,45 +405,45 @@
                                  <div class="absolute -left-20 -bottom-20 h-56 w-56 rounded-full bg-pink-500 blur-[90px] opacity-40 group-hover/stats:opacity-60 transition-opacity duration-1000 delay-100"></div>
 
                                  <div class="relative z-10">
-                                     <h3 class="text-xl font-medium opacity-95 tracking-wide flex items-center justify-between mb-8">
+                                     <h3 class="text-lg sm:text-xl font-medium opacity-95 tracking-wide flex items-center justify-between mb-6 sm:mb-8">
                                          Kết quả học tập
-                                         <button onclick="openStatsModal()" class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/30 shadow-lg backdrop-blur-md group/btn hover:scale-105 active:scale-95">
-                                             <i data-lucide="bar-chart-2" class="h-4 w-4 text-white"></i>
-                                             <span class="text-xs font-bold text-white">Chi tiết</span>
+                                         <button onclick="openStatsModal()" class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/30 shadow-lg backdrop-blur-md group/btn hover:scale-105 active:scale-95">
+                                             <i data-lucide="bar-chart-2" class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white"></i>
+                                             <span class="text-[10px] sm:text-xs font-bold text-white">Chi tiết</span>
                                          </button>
                                      </h3>
                                      
-                                     <div class="flex flex-col gap-2 mb-8">
+                                     <div class="flex flex-col gap-2 mb-6 sm:mb-8">
                                         <div class="flex items-center justify-between">
-                                            <span class="text-sm font-bold text-blue-100 tracking-wide uppercase opacity-80">GPA (Hệ 4)</span>
+                                            <span class="text-xs sm:text-sm font-bold text-blue-100 tracking-wide uppercase opacity-80">GPA (Hệ 4)</span>
                                             <span id="sim-label" class="hidden text-[10px] font-bold bg-white/20 px-2.5 py-1 rounded-md text-white animate-pulse border border-white/30 shadow-sm">DỰ KIẾN</span>
                                         </div>
-                                        <div class="flex items-baseline gap-3 flex-wrap">
-                                          <span id="stat-gpa4" class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter drop-shadow-xl bg-gradient-to-b from-white via-white to-blue-200 bg-clip-text text-transparent py-2 pr-2 leading-none filter">0.00</span>
+                                        <div class="flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                                          <span id="stat-gpa4" class="text-4xl sm:text-7xl md:text-8xl font-black tracking-tighter drop-shadow-xl bg-gradient-to-b from-white via-white to-blue-200 bg-clip-text text-transparent py-2 pr-2 leading-none filter">0.00</span>
                                           
                                           <!-- Sim Delta -->
                                           <div id="sim-delta" class="hidden flex flex-col items-start ml-1 bg-black/20 rounded-xl px-3 py-1.5 backdrop-blur-md border border-white/10 shadow-lg">
                                               <span class="text-[10px] text-white/70 font-bold uppercase whitespace-nowrap mb-0.5">Thực tế: <span id="real-gpa-val" class="text-white">0.00</span></span>
-                                              <span id="diff-val" class="text-base font-black text-green-300 drop-shadow-md leading-none">+0.00</span>
+                                              <span id="diff-val" class="text-sm sm:text-base font-black text-green-300 drop-shadow-md leading-none">+0.00</span>
                                           </div>
 
-                                          <span class="text-xl font-medium text-blue-200 ml-auto opacity-70">/ 4.0</span>
+                                          <span class="text-lg sm:text-xl font-medium text-blue-200 ml-auto opacity-70">/ 4.0</span>
                                         </div>
                                      </div>
 
-                                     <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-6">
-                                        <div class="bg-white/10 rounded-3xl p-4 border border-white/10 backdrop-blur-md shadow-inner">
-                                          <span class="mb-1 block text-[10px] font-bold text-blue-200 uppercase tracking-wider opacity-80">GPA (Hệ 10)</span>
-                                          <span id="stat-gpa10" class="text-2xl sm:text-3xl font-bold tracking-tight">0.00</span>
+                                     <div class="grid grid-cols-2 gap-3 sm:gap-4 border-t border-white/20 pt-4 sm:pt-6">
+                                        <div class="bg-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-white/10 backdrop-blur-md shadow-inner">
+                                          <span class="mb-1 block text-[9px] sm:text-[10px] font-bold text-blue-200 uppercase tracking-wider opacity-80">GPA (Hệ 10)</span>
+                                          <span id="stat-gpa10" class="text-xl sm:text-3xl font-bold tracking-tight">0.00</span>
                                         </div>
-                                        <div class="bg-white/10 rounded-3xl p-4 border border-white/10 backdrop-blur-md shadow-inner">
-                                          <span class="mb-1 block text-[10px] font-bold text-blue-200 uppercase tracking-wider opacity-80">Tổng tín chỉ</span>
-                                          <span id="stat-credits" class="text-2xl sm:text-3xl font-bold tracking-tight">0</span>
+                                        <div class="bg-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-white/10 backdrop-blur-md shadow-inner">
+                                          <span class="mb-1 block text-[9px] sm:text-[10px] font-bold text-blue-200 uppercase tracking-wider opacity-80">Tổng tín chỉ</span>
+                                          <span id="stat-credits" class="text-xl sm:text-3xl font-bold tracking-tight">0</span>
                                         </div>
-                                        <div class="col-span-2 mt-2">
-                                          <div class="flex items-center justify-between bg-white/20 rounded-2xl px-5 py-4 border border-white/20 shadow-lg backdrop-blur-xl">
-                                              <span class="text-xs font-bold text-blue-100 uppercase tracking-wide opacity-90">Xếp loại</span>
-                                              <span id="stat-classification" class="text-base font-black text-white drop-shadow-md whitespace-nowrap tracking-wide">Chưa xếp loại</span>
+                                        <div class="col-span-2 mt-1 sm:mt-2">
+                                          <div class="flex items-center justify-between bg-white/20 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 border border-white/20 shadow-lg backdrop-blur-xl">
+                                              <span class="text-[10px] sm:text-xs font-bold text-blue-100 uppercase tracking-wide opacity-90">Xếp loại</span>
+                                              <span id="stat-classification" class="text-sm sm:text-base font-black text-white drop-shadow-md whitespace-nowrap tracking-wide">Chưa xếp loại</span>
                                           </div>
                                         </div>
                                      </div>
@@ -450,17 +451,17 @@
                             </div>
 
                             <!-- Reference Table -->
-                            <div class="glass-card rounded-[3rem] p-6 order-last">
-                                <button onclick="toggleScale()" class="w-full text-center py-4 rounded-2xl bg-white/40 border border-white/50 hover:bg-white/60 text-base font-bold text-slate-800 hover:text-blue-600 transition-all shadow-sm active:scale-95">
+                            <div class="glass-card rounded-[2rem] sm:rounded-[3rem] p-4 sm:p-6 order-last">
+                                <button onclick="toggleScale()" class="w-full text-center py-3 sm:py-4 rounded-2xl bg-white/40 border border-white/50 hover:bg-white/60 text-sm sm:text-base font-bold text-slate-800 hover:text-blue-600 transition-all shadow-sm active:scale-95">
                                     <span>Thang điểm tham khảo</span>
                                 </button>
-                                <div id="scale-table" class="hidden overflow-hidden pt-5">
+                                <div id="scale-table" class="hidden overflow-hidden pt-4 sm:pt-5">
                                     <table class="w-full text-xs">
                                         <thead>
                                             <tr class="border-b border-slate-200/50 text-slate-500">
-                                                <th class="py-2.5 text-left pl-2">Điểm (10)</th>
-                                                <th class="py-2.5 text-center">Chữ</th>
-                                                <th class="py-2.5 text-right pr-2">Điểm (4)</th>
+                                                <th class="py-2 text-left pl-2">Điểm (10)</th>
+                                                <th class="py-2 text-center">Chữ</th>
+                                                <th class="py-2 text-right pr-2">Điểm (4)</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-slate-200/40">
@@ -483,89 +484,66 @@
                 <div id="tab-content-goal" class="tab-content hidden animate-enter">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                         <!-- Input Section -->
-                        <div class="lg:col-span-4 flex flex-col gap-6 glass-card p-8 rounded-[3rem] h-fit">
-                            <h3 class="text-xl font-bold text-slate-800 border-b border-white/40 pb-5">Thông số đầu vào</h3>
-                            <div class="flex flex-col gap-7">
-                                <label class="flex flex-col w-full group opacity-75">
-                                    <span class="text-slate-500 text-xs font-bold uppercase tracking-wider pb-2.5 flex items-center gap-2">
-                                        <i data-lucide="history" class="h-4 w-4"></i> 
-                                        GPA Hiện tại
-                                        <span class="ml-auto text-[10px] bg-slate-100/60 px-2.5 py-0.5 rounded-lg text-slate-500 font-bold border border-slate-200">
-                                          AUTO
-                                        </span>
-                                    </span>
-                                    <input id="goal-current-gpa" type="text" readonly disabled class="glass-input h-14 w-full px-6 text-slate-500 font-bold outline-none bg-slate-50/40 cursor-not-allowed border-dashed">
-                                </label>
-                                
-                                <label class="flex flex-col w-full group opacity-75">
-                                    <span class="text-slate-500 text-xs font-bold uppercase tracking-wider pb-2.5 flex items-center gap-2">
-                                        <i data-lucide="calculator" class="h-4 w-4"></i> 
-                                        Tín chỉ tích lũy
-                                        <span class="ml-auto text-[10px] bg-slate-100/60 px-2.5 py-0.5 rounded-lg text-slate-500 font-bold border border-slate-200">
-                                          AUTO
-                                        </span>
-                                    </span>
-                                    <input id="goal-accumulated-credits" type="text" readonly disabled class="glass-input h-14 w-full px-6 text-slate-500 font-bold outline-none bg-slate-50/40 cursor-not-allowed border-dashed">
-                                </label>
-
-                                <div class="h-px bg-gradient-to-r from-transparent via-slate-400/30 to-transparent my-2"></div>
+                        <div class="lg:col-span-4 flex flex-col gap-6 glass-card p-5 sm:p-8 rounded-[2rem] sm:rounded-[3rem] h-fit">
+                            <h3 class="text-lg sm:text-xl font-bold text-slate-800 border-b border-white/40 pb-4 sm:pb-5">Thông số đầu vào</h3>
+                            <div class="flex flex-col gap-5 sm:gap-7">
                                 
                                 <label class="flex flex-col w-full group">
-                                    <span class="text-blue-600 text-xs font-bold uppercase tracking-wider pb-2.5 flex items-center gap-2 transition-colors">
-                                        <i data-lucide="target" class="h-4 w-4"></i> GPA Mục tiêu
+                                    <span class="text-blue-600 text-[10px] sm:text-xs font-bold uppercase tracking-wider pb-2 flex items-center gap-2 transition-colors">
+                                        <i data-lucide="target" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i> GPA Mục tiêu
                                     </span>
-                                    <input id="goal-target-gpa" type="text" placeholder="Ví dụ: 3.6" inputmode="decimal" class="glass-input h-16 w-full px-6 text-slate-800 font-bold outline-none placeholder:text-slate-400 placeholder:font-normal focus:bg-white/90 text-lg">
+                                    <input id="goal-target-gpa" type="text" placeholder="Ví dụ: 3.6" inputmode="decimal" class="glass-input h-12 sm:h-16 w-full px-4 sm:px-6 text-slate-800 font-bold outline-none placeholder:text-slate-400 placeholder:font-normal focus:bg-white/90 text-base sm:text-lg">
                                 </label>
                                 <label class="flex flex-col w-full group">
-                                    <span class="text-blue-600 text-xs font-bold uppercase tracking-wider pb-2.5 flex items-center gap-2 transition-colors">
-                                        <i data-lucide="flag" class="h-4 w-4"></i> Tín chỉ mục tiêu
+                                    <span class="text-blue-600 text-[10px] sm:text-xs font-bold uppercase tracking-wider pb-2 flex items-center gap-2 transition-colors">
+                                        <i data-lucide="flag" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i> Tín chỉ mục tiêu
                                     </span>
-                                    <input id="goal-target-credits" type="text" placeholder="Ví dụ: 30" inputmode="numeric" class="glass-input h-16 w-full px-6 text-slate-800 font-bold outline-none placeholder:text-slate-400 placeholder:font-normal focus:bg-white/90 text-lg">
+                                    <input id="goal-target-credits" type="text" placeholder="Ví dụ: 30" inputmode="numeric" class="glass-input h-12 sm:h-16 w-full px-4 sm:px-6 text-slate-800 font-bold outline-none placeholder:text-slate-400 placeholder:font-normal focus:bg-white/90 text-base sm:text-lg">
                                 </label>
                             </div>
                         </div>
 
                         <!-- Result & Strategy Section -->
-                        <div class="lg:col-span-8 flex flex-col gap-8">
+                        <div class="lg:col-span-8 flex flex-col gap-6 sm:gap-8">
                             
                             <!-- Main Required Result -->
-                            <div class="glass-card p-8 rounded-[3rem] relative overflow-hidden group">
+                            <div class="glass-card p-5 sm:p-8 rounded-[2rem] sm:rounded-[3rem] relative overflow-hidden group">
                                 <div id="blob-required" class="absolute -right-8 -top-8 h-48 w-48 rounded-full blur-3xl transition-all duration-700 bg-slate-400/20 group-hover:scale-110"></div>
                                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                                     <div>
-                                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-3">Điểm TB cần đạt</p>
+                                        <p class="text-slate-500 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2 sm:mb-3">Điểm TB cần đạt</p>
                                         <div class="flex items-baseline gap-2">
-                                            <h2 id="goal-required-gpa" class="text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-slate-300 transition-colors">---</h2>
-                                            <span class="text-lg font-bold text-slate-400">/ 4.0</span>
+                                            <h2 id="goal-required-gpa" class="text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-slate-300 transition-colors">---</h2>
+                                            <span class="text-sm sm:text-lg font-bold text-slate-400">/ 4.0</span>
                                         </div>
                                     </div>
-                                    <div id="goal-possibility-badge" class="hidden items-center gap-2.5 text-sm font-bold px-5 py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter"></div>
+                                    <div id="goal-possibility-badge" class="hidden items-center gap-2.5 text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter"></div>
                                 </div>
                             </div>
 
                             <!-- Strategy Dashboard -->
-                            <div class="glass-card p-8 rounded-[3rem] flex flex-col gap-8 relative overflow-hidden">
+                            <div class="glass-card p-5 sm:p-8 rounded-[2rem] sm:rounded-[3rem] flex flex-col gap-6 sm:gap-8 relative overflow-hidden">
                                 <div class="absolute inset-0 bg-white/40 mix-blend-overlay pointer-events-none"></div>
                                 
-                                <div class="relative z-10 flex items-center gap-3 border-b border-white/40 pb-5">
-                                    <div class="bg-indigo-500/10 p-2.5 rounded-xl text-indigo-600 ring-1 ring-indigo-500/20">
-                                        <i data-lucide="compass" class="h-6 w-6"></i>
+                                <div class="relative z-10 flex items-center gap-3 border-b border-white/40 pb-4 sm:pb-5">
+                                    <div class="bg-indigo-500/10 p-2 sm:p-2.5 rounded-xl text-indigo-600 ring-1 ring-indigo-500/20">
+                                        <i data-lucide="compass" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                                     </div>
-                                    <h3 class="text-xl font-bold text-slate-800">Chiến lược học tập</h3>
+                                    <h3 class="text-lg sm:text-xl font-bold text-slate-800">Chiến lược học tập</h3>
                                 </div>
 
                                 <!-- Difficulty Meter -->
                                 <div class="relative z-10">
-                                    <div class="flex justify-between items-end mb-3">
-                                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Áp lực học tập</span>
-                                        <span id="difficulty-label" class="text-sm font-black text-slate-700">---</span>
+                                    <div class="flex justify-between items-end mb-2 sm:mb-3">
+                                        <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Áp lực học tập</span>
+                                        <span id="difficulty-label" class="text-xs sm:text-sm font-black text-slate-700">---</span>
                                     </div>
-                                    <div class="h-6 w-full bg-slate-200/60 rounded-full overflow-hidden border border-white/60 shadow-inner relative">
+                                    <div class="h-4 sm:h-6 w-full bg-slate-200/60 rounded-full overflow-hidden border border-white/60 shadow-inner relative">
                                         <div id="difficulty-bar" class="h-full rounded-full transition-all duration-1000 ease-out relative w-0">
                                             <div class="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]"></div>
                                         </div>
                                     </div>
-                                    <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
+                                    <div class="flex justify-between mt-2 text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
                                         <span>Dễ</span>
                                         <span>Trung bình</span>
                                         <span>Khó</span>
@@ -574,36 +552,36 @@
                                 </div>
 
                                 <!-- Scenario Cards Grid -->
-                                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                                     
                                     <!-- Max Potential Card -->
-                                    <div class="rounded-[2.5rem] bg-gradient-to-br from-blue-50/80 to-indigo-50/80 border border-blue-100 p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div class="rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-blue-50/80 to-indigo-50/80 border border-blue-100 p-5 sm:p-6 flex flex-col gap-3 sm:gap-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                                         <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-200/30 rounded-full blur-2xl group-hover:scale-125 transition-transform"></div>
-                                        <div class="flex items-center gap-3 text-blue-600">
-                                            <i data-lucide="trending-up" class="h-5 w-5"></i>
-                                            <span class="text-xs font-bold uppercase tracking-wide">Tiềm năng tối đa</span>
+                                        <div class="flex items-center gap-2 sm:gap-3 text-blue-600">
+                                            <i data-lucide="trending-up" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wide">Tiềm năng tối đa</span>
                                         </div>
                                         <div>
-                                            <span id="max-potential-gpa" class="text-4xl font-black text-slate-800 tracking-tight block mb-1">---</span>
-                                            <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                                            <span id="max-potential-gpa" class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight block mb-1">---</span>
+                                            <p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">
                                                 GPA cao nhất có thể đạt được nếu bạn đạt 4.0 tất cả các môn còn lại.
                                             </p>
                                         </div>
                                     </div>
 
                                     <!-- Grade Budget Card -->
-                                    <div class="rounded-[2.5rem] bg-gradient-to-br from-emerald-50/80 to-teal-50/80 border border-emerald-100 p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div class="rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-emerald-50/80 to-teal-50/80 border border-emerald-100 p-5 sm:p-6 flex flex-col gap-3 sm:gap-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                                         <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-200/30 rounded-full blur-2xl group-hover:scale-125 transition-transform"></div>
-                                        <div class="flex items-center gap-3 text-emerald-600">
-                                            <i data-lucide="shield-check" class="h-5 w-5"></i>
-                                            <span class="text-xs font-bold uppercase tracking-wide">Được phép sai số</span>
+                                        <div class="flex items-center gap-2 sm:gap-3 text-emerald-600">
+                                            <i data-lucide="shield-check" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wide">Được phép sai số</span>
                                         </div>
                                         <div>
                                             <div class="flex items-baseline gap-2 mb-1">
-                                                <span id="allowed-b-grades" class="text-4xl font-black text-slate-800 tracking-tight">---</span>
-                                                <span class="text-sm font-bold text-slate-500">môn (điểm B)</span>
+                                                <span id="allowed-b-grades" class="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">---</span>
+                                                <span class="text-xs sm:text-sm font-bold text-slate-500">môn (điểm B)</span>
                                             </div>
-                                            <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                                            <p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">
                                                 Số môn tối đa được phép đạt điểm B (3.0) để vẫn giữ được mục tiêu (giả định 3TC/môn).
                                             </p>
                                         </div>
@@ -630,60 +608,60 @@
         <div id="stats-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-xl transition-opacity duration-300" onclick="closeStatsModal()"></div>
             <!-- Scrollable container for modal -->
-            <div class="relative w-full max-w-3xl transform rounded-[3rem] bg-white/80 shadow-2xl transition-all animate-enter border border-white/60 backdrop-blur-3xl flex flex-col max-h-[90vh] ring-1 ring-white/50 overflow-hidden">
+            <div class="relative w-full max-w-3xl transform rounded-[2rem] sm:rounded-[3rem] bg-white/80 shadow-2xl transition-all animate-enter border border-white/60 backdrop-blur-3xl flex flex-col max-h-[90vh] ring-1 ring-white/50 overflow-hidden">
                 
                 <!-- Modal Header -->
-                <div class="flex items-center justify-between px-8 py-6 border-b border-slate-200/50 bg-white/40">
-                     <div class="flex items-center gap-4">
-                        <div class="p-2.5 bg-blue-500/10 rounded-2xl text-blue-600 shadow-sm">
-                            <i data-lucide="bar-chart-2" class="h-6 w-6"></i>
+                <div class="flex items-center justify-between px-6 py-5 sm:px-8 sm:py-6 border-b border-slate-200/50 bg-white/40">
+                     <div class="flex items-center gap-3 sm:gap-4">
+                        <div class="p-2 sm:p-2.5 bg-blue-500/10 rounded-2xl text-blue-600 shadow-sm">
+                            <i data-lucide="bar-chart-2" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                         </div>
-                        <h2 class="text-xl font-bold text-slate-800">Chi tiết thống kê</h2>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-800">Chi tiết thống kê</h2>
                      </div>
-                     <button onclick="closeStatsModal()" class="p-2.5 rounded-full hover:bg-slate-200/50 text-slate-500 transition-colors">
-                         <i data-lucide="x" class="h-6 w-6"></i>
+                     <button onclick="closeStatsModal()" class="p-2 sm:p-2.5 rounded-full hover:bg-slate-200/50 text-slate-500 transition-colors">
+                         <i data-lucide="x" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                      </button>
                 </div>
 
                 <!-- Scrollable Content -->
-                <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                <div class="flex-1 overflow-y-auto p-5 sm:p-8 custom-scrollbar">
                     
                     <!-- Top Section: Grade Distribution -->
-                    <div class="mb-10">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-5 pl-2">Phân bố điểm số</h3>
-                        <div class="h-72 w-full bg-white/40 rounded-[2rem] p-5 border border-white/60 shadow-inner">
+                    <div class="mb-8 sm:mb-10">
+                        <h3 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 sm:mb-5 pl-2">Phân bố điểm số</h3>
+                        <div class="h-64 sm:h-72 w-full bg-white/40 rounded-[2rem] p-4 sm:p-5 border border-white/60 shadow-inner">
                             <canvas id="grade-distribution-chart"></canvas>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <!-- Left: Stats Grid -->
-                        <div class="grid grid-cols-2 gap-5 h-fit">
-                            <div class="bg-white/50 p-5 rounded-[2rem] border border-white/60 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-white/80 transition-colors group">
-                                <span class="text-3xl font-black text-slate-800 group-hover:scale-110 transition-transform" id="modal-total-subjects">0</span>
-                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tổng môn</span>
+                        <div class="grid grid-cols-2 gap-3 sm:gap-5 h-fit">
+                            <div class="bg-white/50 p-4 sm:p-5 rounded-[2rem] border border-white/60 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-white/80 transition-colors group">
+                                <span class="text-2xl sm:text-3xl font-black text-slate-800 group-hover:scale-110 transition-transform" id="modal-total-subjects">0</span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tổng môn</span>
                             </div>
-                            <div class="bg-green-50/60 p-5 rounded-[2rem] border border-green-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-green-50/80 transition-colors group">
-                                <span class="text-3xl font-black text-green-600 group-hover:scale-110 transition-transform" id="modal-a-grades">0</span>
-                                <span class="text-[10px] font-bold text-green-600/70 uppercase tracking-wider">Điểm A</span>
+                            <div class="bg-green-50/60 p-4 sm:p-5 rounded-[2rem] border border-green-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-green-50/80 transition-colors group">
+                                <span class="text-2xl sm:text-3xl font-black text-green-600 group-hover:scale-110 transition-transform" id="modal-a-grades">0</span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-green-600/70 uppercase tracking-wider">Điểm A</span>
                             </div>
-                            <div class="bg-blue-50/60 p-5 rounded-[2rem] border border-blue-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-blue-50/80 transition-colors group">
-                                <span class="text-3xl font-black text-blue-600 group-hover:scale-110 transition-transform" id="modal-accumulated-credits">0</span>
-                                <span class="text-[10px] font-bold text-blue-600/70 uppercase tracking-wider">TC Tích lũy</span>
+                            <div class="bg-blue-50/60 p-4 sm:p-5 rounded-[2rem] border border-blue-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-blue-50/80 transition-colors group">
+                                <span class="text-2xl sm:text-3xl font-black text-blue-600 group-hover:scale-110 transition-transform" id="modal-accumulated-credits">0</span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-blue-600/70 uppercase tracking-wider">TC Tích lũy</span>
                             </div>
-                            <div class="bg-orange-50/60 p-5 rounded-[2rem] border border-orange-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-orange-50/80 transition-colors group">
-                                <span class="text-3xl font-black text-orange-500 group-hover:scale-110 transition-transform" id="modal-highest-score">0</span>
-                                <span class="text-[10px] font-bold text-orange-600/70 uppercase tracking-wider">Cao nhất</span>
+                            <div class="bg-orange-50/60 p-4 sm:p-5 rounded-[2rem] border border-orange-100 shadow-sm flex flex-col items-center justify-center gap-1 hover:bg-orange-50/80 transition-colors group">
+                                <span class="text-2xl sm:text-3xl font-black text-orange-500 group-hover:scale-110 transition-transform" id="modal-highest-score">0</span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-orange-600/70 uppercase tracking-wider">Cao nhất</span>
                             </div>
                         </div>
 
                         <!-- Right: Credits Chart -->
                         <div>
-                             <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-5 pl-2 text-center md:text-left">Tỷ lệ tích lũy</h3>
-                             <div class="h-56 w-full flex items-center justify-center relative bg-white/30 rounded-[2rem] border border-white/40 shadow-sm p-4">
+                             <h3 class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 sm:mb-5 pl-2 text-center md:text-left">Tỷ lệ tích lũy</h3>
+                             <div class="h-48 sm:h-56 w-full flex items-center justify-center relative bg-white/30 rounded-[2rem] border border-white/40 shadow-sm p-4">
                                 <canvas id="credits-chart"></canvas>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                    <span class="text-3xl font-black text-slate-700 drop-shadow-sm" id="modal-credit-percent">0%</span>
+                                    <span class="text-2xl sm:text-3xl font-black text-slate-700 drop-shadow-sm" id="modal-credit-percent">0%</span>
                                 </div>
                              </div>
                         </div>
@@ -691,8 +669,8 @@
                 </div>
 
                 <!-- Footer -->
-                <div class="p-6 border-t border-slate-200/50 bg-white/40 backdrop-blur-md">
-                    <button onclick="closeStatsModal()" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98]">
+                <div class="p-5 sm:p-6 border-t border-slate-200/50 bg-white/40 backdrop-blur-md">
+                    <button onclick="closeStatsModal()" class="w-full py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98]">
                         Đóng thống kê
                     </button>
                 </div>
@@ -892,7 +870,7 @@
                 if(score4Cell) score4Cell.innerText = formatNumber(grade.score4, 1);
                 if(letterCell) {
                     letterCell.innerText = grade.letter;
-                    letterCell.className = `inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold shadow-sm ${grade.colorClass}`;
+                    letterCell.className = `inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold shadow-sm ${grade.colorClass}`;
                 }
             }
         };
@@ -1060,7 +1038,7 @@
             
             // Reconstruct content to ensure Lucide can re-render fresh icons
             const iconName = newSubjectIsAccumulated ? 'check-circle-2' : 'circle';
-            btn.innerHTML = `<i data-lucide="${iconName}" class="h-5 w-5 shrink-0"></i><span class="text-sm font-bold whitespace-nowrap">Tích lũy</span>`;
+            btn.innerHTML = `<i data-lucide="${iconName}" class="h-4 w-4 sm:h-5 sm:w-5 shrink-0"></i><span class="text-xs sm:text-sm font-bold whitespace-nowrap">Tích lũy</span>`;
             
             // Toggle styles
             if(newSubjectIsAccumulated) {
@@ -1176,26 +1154,26 @@
                 // Semester Header - REVISED: Liquid glass bubbles, rounded corners, stats next to title
                 html += `
                     <tr class="border-b border-transparent">
-                        <td colspan="8" class="pt-8 pb-3 px-2 sm:px-4">
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <td colspan="8" class="pt-6 pb-2 px-0 sm:pt-8 sm:pb-3 sm:px-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                                 <!-- Title Bubble -->
-                                <div class="glass-card px-5 py-2.5 rounded-2xl border border-blue-200/50 bg-blue-50/30 backdrop-blur-md shadow-sm w-fit">
-                                    <span class="text-xs font-black uppercase tracking-widest text-blue-600 drop-shadow-sm whitespace-nowrap">${sem}</span>
+                                <div class="glass-card px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-2xl border border-blue-200/50 bg-blue-50/30 backdrop-blur-md shadow-sm w-fit">
+                                    <span class="text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-600 drop-shadow-sm whitespace-nowrap">${sem}</span>
                                 </div>
                                 
                                 <!-- Stats Bubbles -->
                                 <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-                                     <div class="glass-card px-3.5 py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
-                                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">GPA</span>
-                                        <span class="text-sm font-black text-blue-600">${formatNumber(groupStats.gpa4)}</span>
+                                     <div class="glass-card px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-1.5 sm:gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
+                                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">GPA</span>
+                                        <span class="text-xs sm:text-sm font-black text-blue-600">${formatNumber(groupStats.gpa4)}</span>
                                     </div>
-                                    <div class="glass-card px-3.5 py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
-                                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">TB</span>
-                                        <span class="text-sm font-bold text-slate-700">${formatNumber(groupStats.gpa10)}</span>
+                                    <div class="glass-card px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-1.5 sm:gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
+                                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">TB</span>
+                                        <span class="text-xs sm:text-sm font-bold text-slate-700">${formatNumber(groupStats.gpa10)}</span>
                                     </div>
-                                    <div class="glass-card px-3.5 py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
-                                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">TC</span>
-                                        <span class="text-sm font-bold text-slate-700">${groupStats.totalCredits}</span>
+                                    <div class="glass-card px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border border-white/60 bg-white/50 backdrop-blur-md flex items-center gap-1.5 sm:gap-2 shadow-sm hover:scale-105 transition-transform cursor-default group/stat">
+                                        <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover/stat:text-blue-500 transition-colors">TC</span>
+                                        <span class="text-xs sm:text-sm font-bold text-slate-700">${groupStats.totalCredits}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1208,8 +1186,8 @@
                     const grade = getGradeInfo(subject.score10);
                     const opacityClass = subject.isAccumulated ? '' : 'opacity-40 grayscale';
                     const accIcon = subject.isAccumulated 
-                        ? `<i data-lucide="check-circle-2" class="h-5 w-5 ${isSimulating ? 'text-purple-500' : 'text-green-500'} drop-shadow-sm"></i>` 
-                        : `<i data-lucide="circle" class="h-5 w-5"></i>`;
+                        ? `<i data-lucide="check-circle-2" class="h-4 w-4 sm:h-5 sm:w-5 ${isSimulating ? 'text-purple-500' : 'text-green-500'} drop-shadow-sm"></i>` 
+                        : `<i data-lucide="circle" class="h-4 w-4 sm:h-5 sm:w-5"></i>`;
                     
                     // Input vs Text for Score column
                     const scoreCellContent = isSimulating 
@@ -1220,26 +1198,26 @@
 
                     const deleteBtn = isSimulating 
                         ? `` // No delete in Sim mode
-                        : `<button onclick="deleteSubject('${subject.id}')" class="rounded-xl p-2.5 text-slate-400 transition-all hover:bg-red-100 hover:text-red-500 hover:shadow-sm hover:scale-105"><i data-lucide="trash-2" class="h-4 w-4"></i></button>`;
+                        : `<button onclick="deleteSubject('${subject.id}')" class="rounded-xl p-1.5 sm:p-2.5 text-slate-400 transition-all hover:bg-red-100 hover:text-red-500 hover:shadow-sm hover:scale-105"><i data-lucide="trash-2" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i></button>`;
 
                     html += `
                     <tr id="row-${subject.id}" class="group transition-all hover:bg-white/40 ${opacityClass} border-b border-transparent hover:border-white/50 table-row-anim rounded-2xl">
-                        <td class="px-5 py-4 text-sm text-slate-500 font-bold opacity-60 hidden sm:table-cell pl-8">${globalIndex}</td>
-                        <td class="px-5 py-4 text-sm font-semibold text-slate-800 whitespace-normal md:whitespace-nowrap min-w-[120px]" title="${subject.name}">${subject.name}</td>
-                        <td class="px-5 py-4 text-center text-sm text-slate-600 font-medium">${subject.credits}</td>
-                        <td class="px-5 py-4 text-center">
-                            <button onclick="toggleSubjectAccumulate('${subject.id}')" class="text-slate-400 hover:text-blue-500 transition-colors p-1.5 transform active:scale-90 hover:bg-white/50 rounded-full">
+                        <td class="px-2 py-3 sm:px-5 sm:py-4 text-xs sm:text-sm text-slate-500 font-bold opacity-60 hidden sm:table-cell pl-8">${globalIndex}</td>
+                        <td class="px-2 py-3 sm:px-5 sm:py-4 text-xs sm:text-sm font-semibold text-slate-800 whitespace-normal sm:whitespace-nowrap min-w-[100px] sm:min-w-[120px]" title="${subject.name}">${subject.name}</td>
+                        <td class="px-1 py-3 sm:px-5 sm:py-4 text-center text-xs sm:text-sm text-slate-600 font-medium">${subject.credits}</td>
+                        <td class="px-1 py-3 sm:px-5 sm:py-4 text-center">
+                            <button onclick="toggleSubjectAccumulate('${subject.id}')" class="text-slate-400 hover:text-blue-500 transition-colors p-1 sm:p-1.5 transform active:scale-90 hover:bg-white/50 rounded-full">
                                 ${accIcon}
                             </button>
                         </td>
-                        <td class="px-5 py-4 text-center text-sm">${scoreCellContent}</td>
-                        <td class="px-5 py-4 text-center text-sm font-black ${isSimulating ? 'text-purple-600' : 'text-blue-600'} drop-shadow-sm score4-cell">${formatNumber(grade.score4, 1)}</td>
-                        <td class="px-5 py-4 text-center letter-cell">
-                            <span class="inline-flex items-center rounded-lg px-3 py-1 text-xs font-bold shadow-sm ${grade.colorClass}">
+                        <td class="px-1 py-3 sm:px-5 sm:py-4 text-center text-xs sm:text-sm">${scoreCellContent}</td>
+                        <td class="px-1 py-3 sm:px-5 sm:py-4 text-center text-xs sm:text-sm font-black ${isSimulating ? 'text-purple-600' : 'text-blue-600'} drop-shadow-sm score4-cell">${formatNumber(grade.score4, 1)}</td>
+                        <td class="px-1 py-3 sm:px-5 sm:py-4 text-center letter-cell">
+                            <span class="inline-flex items-center rounded-lg px-1.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold shadow-sm ${grade.colorClass}">
                                 ${grade.letter}
                             </span>
                         </td>
-                        <td class="px-5 py-4 text-right pr-8">${deleteBtn}</td>
+                        <td class="px-1 py-3 sm:px-5 sm:py-4 text-right pr-2 sm:pr-8">${deleteBtn}</td>
                     </tr>
                     `;
                 });
@@ -1275,13 +1253,13 @@
                 if(diffEl) {
                     if(diff > 0) {
                         diffEl.innerText = "+" + formatNumber(diff);
-                        diffEl.className = "text-base font-black text-green-300 drop-shadow-md leading-none";
+                        diffEl.className = "text-sm sm:text-base font-black text-green-300 drop-shadow-md leading-none";
                     } else if (diff < 0) {
                         diffEl.innerText = formatNumber(diff);
-                        diffEl.className = "text-base font-black text-red-300 drop-shadow-md leading-none";
+                        diffEl.className = "text-sm sm:text-base font-black text-red-300 drop-shadow-md leading-none";
                     } else {
                         diffEl.innerText = "0.00";
-                        diffEl.className = "text-base font-black text-white/50 drop-shadow-md leading-none";
+                        diffEl.className = "text-sm sm:text-base font-black text-white/50 drop-shadow-md leading-none";
                     }
                 }
             }
@@ -1328,7 +1306,7 @@
 
             if (targetGPA <= 0 || targetCredits <= 0) {
                 resultEl.innerText = "---";
-                resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-slate-300 transition-colors";
+                resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-slate-300 transition-colors";
                 badge.className = "hidden";
                 diffBar.style.width = '0%';
                 diffLabel.innerText = "---";
@@ -1391,10 +1369,10 @@
                 percentage = 100;
                 barColor = 'difficulty-gradient-red';
                 labelText = 'Bất khả thi';
-                resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-red-500 transition-colors";
+                resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-red-500 transition-colors";
                 
-                badge.className = "flex items-center gap-2.5 text-sm font-bold px-5 py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-red-100 text-red-600 border border-red-200";
-                badge.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4"></i> Cần > 4.0`;
+                badge.className = "flex items-center gap-2.5 text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-red-100 text-red-600 border border-red-200";
+                badge.innerHTML = `<i data-lucide="alert-triangle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Cần > 4.0`;
                 
                 // Pulsating effect for impossible
                 if(barParent) barParent.classList.add('ring-2', 'ring-red-400', 'ring-offset-2');
@@ -1403,7 +1381,7 @@
                  percentage = 0;
                  barColor = 'difficulty-gradient-green';
                  labelText = 'Đã đạt';
-                 resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-green-500 transition-colors";
+                 resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-green-500 transition-colors";
                  badge.className = "hidden";
                  if(barParent) barParent.classList.remove('ring-2', 'ring-red-400', 'ring-offset-2');
             } else {
@@ -1414,27 +1392,27 @@
                 if (requiredGPA < 2.5) {
                     barColor = 'difficulty-gradient-green';
                     labelText = 'Dễ dàng';
-                    resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-green-500 transition-colors";
-                    badge.className = "flex items-center gap-2.5 text-sm font-bold px-5 py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-green-100 text-green-600 border border-green-200";
-                    badge.innerHTML = `<i data-lucide="smile" class="w-4 h-4"></i> Khả thi`;
+                    resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-green-500 transition-colors";
+                    badge.className = "flex items-center gap-2.5 text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-green-100 text-green-600 border border-green-200";
+                    badge.innerHTML = `<i data-lucide="smile" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Khả thi`;
                 } else if (requiredGPA < 3.2) {
                     barColor = 'difficulty-gradient-blue';
                     labelText = 'Trung bình';
-                    resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-blue-500 transition-colors";
-                    badge.className = "flex items-center gap-2.5 text-sm font-bold px-5 py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-blue-100 text-blue-600 border border-blue-200";
-                    badge.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i> Cố gắng`;
+                    resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-blue-500 transition-colors";
+                    badge.className = "flex items-center gap-2.5 text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-blue-100 text-blue-600 border border-blue-200";
+                    badge.innerHTML = `<i data-lucide="thumbs-up" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Cố gắng`;
                 } else if (requiredGPA < 3.6) {
                     barColor = 'difficulty-gradient-orange';
                     labelText = 'Thử thách';
-                    resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-orange-500 transition-colors";
-                    badge.className = "flex items-center gap-2.5 text-sm font-bold px-5 py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-orange-100 text-orange-600 border border-orange-200";
-                    badge.innerHTML = `<i data-lucide="zap" class="w-4 h-4"></i> Tập trung cao`;
+                    resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-orange-500 transition-colors";
+                    badge.className = "flex items-center gap-2.5 text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-orange-100 text-orange-600 border border-orange-200";
+                    badge.innerHTML = `<i data-lucide="zap" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Tập trung cao`;
                 } else {
                     barColor = 'difficulty-gradient-red';
                     labelText = 'Rất khó';
-                    resultEl.className = "text-5xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-red-500 transition-colors";
-                    badge.className = "flex items-center gap-2.5 text-sm font-bold px-5 py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-red-100 text-red-600 border border-red-200";
-                    badge.innerHTML = `<i data-lucide="flame" class="w-4 h-4"></i> Cực hạn`;
+                    resultEl.className = "text-4xl sm:text-7xl font-black tracking-tighter drop-shadow-sm text-red-500 transition-colors";
+                    badge.className = "flex items-center gap-2.5 text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl w-fit backdrop-blur-md shadow-sm transition-all transform animate-enter bg-red-100 text-red-600 border border-red-200";
+                    badge.innerHTML = `<i data-lucide="flame" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> Cực hạn`;
                 }
             }
 
@@ -1651,11 +1629,11 @@
             const btnGoal = document.getElementById('nav-goal');
 
             if (tab === 'calculator') {
-                if(btnCalc) btnCalc.className = "flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
-                if(btnGoal) btnGoal.className = "flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
+                if(btnCalc) btnCalc.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
+                if(btnGoal) btnGoal.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
             } else {
-                if(btnGoal) btnGoal.className = "flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
-                if(btnCalc) btnCalc.className = "flex-1 md:flex-none relative z-10 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
+                if(btnGoal) btnGoal.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
+                if(btnCalc) btnCalc.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
                 calculateGoal(); // Recalculate on switch
             }
         }; 
