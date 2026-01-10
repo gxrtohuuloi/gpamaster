@@ -222,15 +222,6 @@
       .difficulty-gradient-blue { background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); }
       .difficulty-gradient-orange { background: linear-gradient(90deg, #fb923c 0%, #f97316 100%); }
       .difficulty-gradient-red { background: linear-gradient(90deg, #f87171 0%, #ef4444 100%); }
-
-      /* Custom Toggle */
-      .toggle-checkbox:checked {
-        right: 0;
-        border-color: #68D391;
-      }
-      .toggle-checkbox:checked + .toggle-label {
-        background-color: #68D391;
-      }
     </style>
 </head>
 <body>
@@ -270,40 +261,22 @@
                             <button onclick="switchTab('goal')" id="nav-goal" class="flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40">
                                 Mục tiêu
                             </button>
+                            <button onclick="switchTab('sim')" id="nav-sim" class="flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40">
+                                Dự tính
+                            </button>
                         </div>
                     </div>
 
-                    <!-- User & Sim -->
-                    <div class="flex items-center gap-2 sm:gap-5 relative z-20 order-2 md:order-3 justify-end flex-1 md:flex-none">
-                         <!-- What-if Toggle (Updated to Match Image) -->
-                         <div class="flex items-center mr-1 sm:mr-2">
-                             <label class="flex items-center cursor-pointer p-1.5 bg-white rounded-full border border-slate-200/60 shadow-sm gap-2 sm:gap-3 pr-3 sm:pr-4">
-                                <div class="relative">
-                                    <input type="checkbox" id="sim-toggle" class="sr-only peer" onchange="toggleSimulation()">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:shadow-sm peer-checked:bg-slate-800"></div>
-                                </div>
-                                <span class="text-xs sm:text-sm font-bold text-slate-700 select-none whitespace-nowrap">Dự tính</span>
-                            </label>
-                        </div>
-
+                    <!-- User Info (Collapsed to Icon) -->
+                    <div class="flex items-center gap-1 sm:gap-5 relative z-20 order-2 md:order-3 justify-end flex-1 md:flex-none">
                         <div class="hidden lg:flex flex-col items-end">
                             <span id="save-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">OFFLINE</span>
                         </div>
                         
-                        <div class="flex items-center gap-2 bg-white/40 hover:bg-white/60 rounded-2xl px-3 sm:px-4 py-2.5 border border-white/50 shadow-sm backdrop-blur-md transition-all focus-within:bg-white/90 focus-within:ring-4 focus-within:ring-blue-100/50 focus-within:border-blue-300 group/input">
-                            <div class="relative">
-                                <i data-lucide="user-circle-2" class="w-6 h-6 text-slate-600 group-focus-within/input:text-blue-600 transition-colors"></i>
-                                <div id="status-dot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-slate-400 ring-2 ring-white"></div>
-                            </div>
-                            <input 
-                                id="student-id" 
-                                type="text" 
-                                placeholder="MSSV" 
-                                onchange="handleStudentIdChange(this.value)" 
-                                onkeydown="if(event.key === 'Enter') this.blur()"
-                                class="bg-transparent border-none p-0 text-sm font-bold text-slate-700 placeholder-slate-400 w-16 sm:w-28 focus:ring-0 focus:outline-none uppercase tracking-wide text-center sm:text-left transition-all"
-                            >
-                        </div>
+                        <button onclick="openStudentIdModal()" class="relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/40 hover:bg-white/60 border border-white/50 shadow-sm backdrop-blur-md transition-all hover:scale-105 active:scale-95 group focus:ring-4 focus:ring-blue-100/50">
+                            <i data-lucide="user-circle-2" class="w-6 h-6 text-slate-600 group-hover:text-blue-600 transition-colors"></i>
+                            <div id="status-dot" class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-slate-400 ring-2 ring-white transform translate-x-1 translate-y-1"></div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -332,7 +305,7 @@
                             <div class="glass-card p-4 sm:p-8 lg:p-10">
                                 <h3 class="mb-6 sm:mb-8 flex items-center gap-4 text-lg sm:text-xl font-bold text-slate-800">
                                     <div class="bg-blue-500/10 p-2 sm:p-3 rounded-2xl text-blue-600 ring-1 ring-blue-500/20 shadow-sm backdrop-blur-sm">
-                                        <i data-lucide="plus" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                                        <i data-lucide="plus" class="w-5 h-5 sm:w-6 sm:w-6"></i>
                                     </div>
                                     Nhập thông tin môn học
                                 </h3>
@@ -701,6 +674,40 @@
             </div>
         </div>
 
+        <!-- Student ID Modal -->
+        <div id="student-id-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300" onclick="closeStudentIdModal()"></div>
+            <div class="relative w-full max-w-sm transform rounded-[2.5rem] bg-white/80 shadow-2xl transition-all animate-enter border border-white/60 backdrop-blur-3xl p-6 ring-1 ring-white/50 flex flex-col gap-6">
+                <div class="flex justify-between items-center pl-2">
+                    <h3 class="text-xl font-black text-slate-800 tracking-tight">Đăng nhập</h3>
+                    <button onclick="closeStudentIdModal()" class="p-2 rounded-full hover:bg-white/50 text-slate-500 transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                
+                <div class="bg-blue-50/40 rounded-3xl p-5 border border-blue-100/50 backdrop-blur-sm">
+                    <p class="text-sm text-slate-600 font-bold mb-1">Nhập mã số sinh viên</p>
+                    <p class="text-xs text-slate-400 font-medium">Dữ liệu điểm sẽ được đồng bộ tự động.</p>
+                </div>
+
+                <div class="relative group my-2">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <input 
+                        id="student-id" 
+                        type="text" 
+                        placeholder="B200xxxx" 
+                        class="relative w-full h-16 px-6 text-center font-black text-2xl uppercase tracking-[0.1em] text-blue-600 placeholder:text-slate-300/80 bg-gradient-to-br from-white/80 via-white/50 to-white/30 backdrop-blur-xl border border-white/80 shadow-[inset_0_2px_15px_rgba(255,255,255,1),0_8px_20px_rgba(59,130,246,0.1)] rounded-[2rem] transition-all duration-300 focus:scale-[1.02] focus:bg-white/60 focus:shadow-[0_15px_30px_rgba(59,130,246,0.25),inset_0_2px_20px_rgba(255,255,255,1)] outline-none caret-blue-500"
+                        onkeydown="if(event.key === 'Enter') saveStudentIdFromModal()"
+                    >
+                </div>
+
+                <button onclick="saveStudentIdFromModal()" class="w-full h-14 rounded-[2rem] bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-lg group">
+                    <span>Xác nhận</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
@@ -803,9 +810,10 @@
         window.toTitleCase = toTitleCase;
 
         // --- SIMULATION MODE LOGIC ---
-        window.toggleSimulation = function() {
-            isSimulating = !isSimulating;
-            const toggle = document.getElementById('sim-toggle');
+        window.setSimulation = function(enabled) {
+            if (isSimulating === enabled) return;
+            isSimulating = enabled;
+            
             const simBadge = document.getElementById('sim-badge');
             const statsBg = document.getElementById('stats-bg');
             const btnAdd = document.getElementById('btn-add-main');
@@ -876,6 +884,11 @@
             renderSubjectList();
             updateStats();
         };
+        
+        // Backwards compatibility alias if needed, but new logic uses setSimulation directly
+        window.toggleSimulation = function() {
+            setSimulation(!isSimulating);
+        };
 
         window.updateSimulatedScore = function(id, newScoreStr) {
             const newScore = parseInputNumber(newScoreStr);
@@ -912,10 +925,40 @@
         };
 
         // --- CORE FUNCTIONS ---
+        
+        window.openStudentIdModal = function() {
+            const modal = document.getElementById('student-id-modal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    document.getElementById('student-id').focus();
+                }, 100);
+            }
+        };
+
+        window.closeStudentIdModal = function() {
+            const modal = document.getElementById('student-id-modal');
+            if(modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        };
+
+        window.saveStudentIdFromModal = function() {
+            const input = document.getElementById('student-id');
+            if(input) {
+                handleStudentIdChange(input.value);
+            }
+            closeStudentIdModal();
+        };
 
         window.handleStudentIdChange = function(val) {
             const upper = val.trim().toUpperCase();
-            document.getElementById('student-id').value = upper;
+            const stdInput = document.getElementById('student-id');
+            
+            if(stdInput && stdInput.value !== upper) stdInput.value = upper;
+            
             localStorage.setItem('gpa-student-id', upper);
             if (unsubscribe) { unsubscribe(); unsubscribe = null; }
             if (upper.length < 3) {
@@ -1011,7 +1054,7 @@
             else if (type === 'unsaved') { shortText = 'CHƯA LƯU'; colorClass = 'text-orange-500'; dotClass = 'bg-orange-400'; }
 
             if(badgeTextEl) { badgeTextEl.innerText = shortText; badgeTextEl.className = `text-[10px] font-bold uppercase tracking-wider ${colorClass}`; }
-            if(dotEl) { dotEl.className = `absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${dotClass}`; }
+            if(dotEl) { dotEl.className = `absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white transform translate-x-1 translate-y-1 ${dotClass}`; }
         }
 
         function triggerAutoSave() {
@@ -1251,7 +1294,7 @@
             lucide.createIcons({ root: tbody }); // SCOPED RENDERING OPTIMIZATION
         }
 
-        function updateStats() {
+        window.updateStats = function() {
             const currentList = isSimulating ? simulatedSubjects : subjects;
             const stats = calculateGPA(currentList);
             
@@ -1642,25 +1685,47 @@
                     el.classList.remove('animate-enter');
                 }
             });
-            const target = document.getElementById(`tab-content-${tab}`);
+
+            // If sim or calculator, both use the calculator content div
+            let targetId = 'tab-content-calculator';
+            if (tab === 'goal') targetId = 'tab-content-goal';
+
+            const target = document.getElementById(targetId);
             if(target) {
                 target.classList.remove('hidden');
-                // Trigger reflow to restart animation
-                void target.offsetWidth;
+                void target.offsetWidth; // Trigger reflow
                 target.classList.add('animate-enter');
             }
 
-            // Nav styling
+            // Handle Mode Switching
+            if (tab === 'calculator') {
+                setSimulation(false);
+            } else if (tab === 'sim') {
+                setSimulation(true);
+            }
+            // 'goal' tab doesn't force mode change
+
+            // Nav Styling
             const btnCalc = document.getElementById('nav-calculator');
             const btnGoal = document.getElementById('nav-goal');
+            const btnSim = document.getElementById('nav-sim');
+
+            // Reset all
+            const inactiveClass = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
+            const activeClassBlue = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
+            const activeClassPurple = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-purple-600 ring-1 ring-black/5";
+
+            if(btnCalc) btnCalc.className = inactiveClass;
+            if(btnGoal) btnGoal.className = inactiveClass;
+            if(btnSim) btnSim.className = inactiveClass;
 
             if (tab === 'calculator') {
-                if(btnCalc) btnCalc.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
-                if(btnGoal) btnGoal.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
-            } else {
-                if(btnGoal) btnGoal.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 bg-white shadow-md text-blue-600 ring-1 ring-black/5";
-                if(btnCalc) btnCalc.className = "flex-1 md:flex-none relative z-10 rounded-full px-4 py-2 sm:px-6 sm:py-2.5 text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-white/40";
-                calculateGoal(); // Recalculate on switch
+                if(btnCalc) btnCalc.className = activeClassBlue;
+            } else if (tab === 'goal') {
+                if(btnGoal) btnGoal.className = activeClassBlue;
+                calculateGoal(); // Recalculate
+            } else if (tab === 'sim') {
+                if(btnSim) btnSim.className = activeClassPurple;
             }
         }; 
 
@@ -1681,7 +1746,9 @@
             const storedId = localStorage.getItem('gpa-student-id');
             const stdInput = document.getElementById('student-id');
             if (storedId) {
-                if(stdInput) stdInput.value = storedId;
+                if(stdInput) {
+                    stdInput.value = storedId;
+                }
                 handleStudentIdChange(storedId);
             } else {
                 updateStatus("Sẵn sàng", "normal");
